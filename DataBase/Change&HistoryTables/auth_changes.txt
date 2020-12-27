@@ -1,0 +1,22 @@
+-- drop if exists
+DROP TABLE IF EXISTS AUTH_CHANGES CASCADE;
+
+CREATE TABLE AUTH_CHANGES
+(id SERIAL, -- ID изменения
+ user_id INT, -- ID пользователя
+ change_from VARCHAR(16), -- Изменение из
+ change_to VARCHAR(16), -- Изменение в
+ change_type INT, -- Тип изменения
+ -----
+ PRIMARY KEY(id),
+ FOREIGN KEY(user_id)
+ 	REFERENCES public.USERS(id),
+ FOREIGN KEY(change_type)
+	REFERENCES public.CHANGE_TYPES(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(user_id IS NOT NULL),
+ CHECK(change_from IS NOT NULL),
+ CHECK(change_to IS NOT NULL),
+ CHECK(change_type IS NOT NULL)
+);

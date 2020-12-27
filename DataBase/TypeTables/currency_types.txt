@@ -1,0 +1,52 @@
+-- drop if exists
+DROP TABLE IF EXISTS CURRENCY_TYPES CASCADE;
+
+CREATE TABLE CURRENCY_TYPES
+(id SERIAL, -- ID валюты
+ type_name VARCHAR(3), -- Название валюты
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(type_name),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(type_name IS NOT NULL)
+);
+
+-- insert default values
+INSERT INTO public.CURRENCY_TYPES(
+	type_name
+)
+VALUES('AUD'),
+('AZN'),
+('GBP'),
+('AMD'),
+('BYN'),
+('BGN'),
+('BRL'),
+('HUF'),
+('HKD'),
+('DKK'),
+('USD'),
+('EUR'),
+('INR'),
+('KZT'),
+('CAD'),
+('KGS'),
+('CNY'),
+('MDL'),
+('NOK'),
+('PLN'),
+('RON'),
+('XDR'),
+('SGD'),
+('TJS'),
+('TRY'),
+('TMT'),
+('UZS'),
+('UAH'),
+('CZK'),
+('SEK'),
+('CHF'),
+('ZAR'),
+('KRW'),
+('JPY');

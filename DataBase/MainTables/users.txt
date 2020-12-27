@@ -1,0 +1,24 @@
+-- drop if exists
+DROP TABLE IF EXISTS USERS CASCADE;
+
+CREATE TABLE USERS
+(id SERIAL, -- ID пользователя
+ first_name VARCHAR(30), -- Имя
+ surname VARCHAR(30), -- Фамилия
+ patronymic VARCHAR(30), -- Отчество
+ date_of_birth VARCHAR(10), -- Дата рождения
+ phone VARCHAR(10), -- Номер телефона
+ pass_series VARCHAR(6), -- Серия паспорта
+ pass_number VARCHAR(8), -- Номер паспорта
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(first_name, surname, pass_series, pass_number),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(first_name IS NOT NULL),
+ CHECK(surname IS NOT NULL),
+ CHECK(LENGTH(date_of_birth) = 10),
+ CHECK(LENGTH(phone) = 10),
+ CHECK(LENGTH(pass_series) = 4),
+ CHECK(LENGTH(pass_number) = 6)
+);

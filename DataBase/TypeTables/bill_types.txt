@@ -1,0 +1,22 @@
+-- drop if exists
+DROP TABLE IF EXISTS BILL_TYPES CASCADE;
+
+CREATE TABLE BILL_TYPES
+(id SERIAL, -- ID типа счёта
+ type_name VARCHAR(10), -- Название типа счёта
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(type_name),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(type_name IS NOT NULL)
+);
+
+-- insert default values
+INSERT INTO public.BILL_TYPES(
+	type_name
+)
+VALUES('bill'),
+('visa'),
+('mastercard'),
+('mir')

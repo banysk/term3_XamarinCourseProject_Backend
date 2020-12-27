@@ -1,0 +1,17 @@
+-- drop if exists
+DROP TABLE IF EXISTS AUTH_HISTORY CASCADE;
+
+CREATE TABLE AUTH_HISTORY
+(id SERIAL, -- ID посещения
+ user_id INT, -- ID пользователя
+ visit_time DATE, -- Дата посещения
+ -----
+ PRIMARY KEY(id),
+ FOREIGN KEY(user_id)
+ 	REFERENCES USERS(id)
+ 	ON DELETE CASCADE,
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(user_id IS NOT NULL),
+ CHECK(visit_time IS NOT NULL)
+);

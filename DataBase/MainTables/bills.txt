@@ -1,0 +1,27 @@
+-- drop if exists
+DROP TABLE IF EXISTS BILLS CASCADE;
+
+CREATE TABLE BILLS
+(id SERIAL, -- ID счёта
+ bill_number VARCHAR(20), -- Номер счёта
+ user_id INT, -- ID пользователя
+ currency INT, -- Валюта
+ balance INT, -- Баланс
+ bill_type INT, -- Тип счёта
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(bill_number),
+ FOREIGN KEY(user_id)
+ 	REFERENCES public.USERS(id),
+ FOREIGN KEY(currency)
+ 	REFERENCES public.CURRENCY_TYPES(id),
+ FOREIGN KEY(bill_type)
+ 	REFERENCES public.BILL_TYPES(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(LENGTH(bill_number) >= 16),
+ CHECK(user_id IS NOT NULL),
+ CHECK(currency IS NOT NULL),
+ CHECK(balance IS NOT NULL),
+ CHECK(bill_type IS NOT NULL)
+);

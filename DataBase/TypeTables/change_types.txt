@@ -1,0 +1,20 @@
+-- drop if exists
+DROP TABLE IF EXISTS CHANGE_TYPES CASCADE;
+
+CREATE TABLE CHANGE_TYPES
+(id SERIAL, -- ID типа изменений
+ type_name VARCHAR(8), -- Название типа изменения
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(type_name),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(type_name IS NOT NULL)
+);
+
+-- insert default values
+INSERT INTO public.CHANGE_TYPES(
+	type_name
+)
+VALUES('login'),
+('password');

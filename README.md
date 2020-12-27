@@ -4,7 +4,7 @@
 ## DataBase
 ### Main Tables
 #### users:white_check_mark:    
-[register_user (function)](#register_user:white_check_mark:)    
+[register_user (function)](#register_userwhite_check_mark)    
 find_user_with_login (function)    
 find_user_with_personal_data (function)    
 #### auth:white_check_mark:    

@@ -15,18 +15,18 @@
 [trigger_auth_changed (trigger)](trigger_auth_changedwhite_check_mark)    
 #### bills | created | ...    
 #### patterns | created | ...   
-
+    
 ### Change&History Tables
 #### auth_changes | created | ...    
 #### auth_history | created | ...    
 #### bills_history | created | ...   
-
+    
 ### Type Tables
 #### change_types:white_check_mark:    
 #### currency_types:white_check_mark:    
 #### bill_types:white_check_mark:    
 #### operation_types:white_check_mark:    
-
+    
 ### Functions
 #### register_user:white_check_mark:
 args:    
@@ -102,11 +102,11 @@ input_login VARCHAR(16)
 return:    
 user_password VARCHAR(16) - success    
 ERR - wrong login    
-
+    
 ### Triggers
 #### trigger_auth_changed:white_check_mark:     
 inserts info about changing login or password into AUTH_CHANGES    
-
-
-
+    
+    
+    
 [Вверх](#XamarinCourseProject_Backend)

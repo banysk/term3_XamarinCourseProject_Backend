@@ -1,0 +1,117 @@
+-- drop if exists
+DROP TABLE IF EXISTS BILL_TYPES CASCADE;
+
+CREATE TABLE BILL_TYPES
+(id SERIAL, -- ID типа счёта
+ type_name VARCHAR(10), -- Название типа счёта
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(type_name),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(type_name IS NOT NULL)
+);
+
+-- insert default values
+INSERT INTO public.BILL_TYPES(
+	type_name
+)
+VALUES('bill'),
+('visa'),
+('mastercard'),
+('mir')
+
+-- drop if exists
+DROP TABLE IF EXISTS CHANGE_TYPES CASCADE;
+
+CREATE TABLE CHANGE_TYPES
+(id SERIAL, -- ID типа изменений
+ type_name VARCHAR(8), -- Название типа изменения
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(type_name),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(type_name IS NOT NULL)
+);
+
+-- insert default values
+INSERT INTO public.CHANGE_TYPES(
+	type_name
+)
+VALUES('login'),
+('password');
+
+-- drop if exists
+DROP TABLE IF EXISTS CURRENCY_TYPES CASCADE;
+
+CREATE TABLE CURRENCY_TYPES
+(id SERIAL, -- ID валюты
+ type_name VARCHAR(3), -- Название валюты
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(type_name),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(type_name IS NOT NULL)
+);
+
+-- insert default values
+INSERT INTO public.CURRENCY_TYPES(
+	type_name
+)
+VALUES('AUD'),
+('AZN'),
+('GBP'),
+('AMD'),
+('BYN'),
+('BGN'),
+('BRL'),
+('HUF'),
+('HKD'),
+('DKK'),
+('USD'),
+('EUR'),
+('INR'),
+('KZT'),
+('CAD'),
+('KGS'),
+('CNY'),
+('MDL'),
+('NOK'),
+('PLN'),
+('RON'),
+('XDR'),
+('SGD'),
+('TJS'),
+('TRY'),
+('TMT'),
+('UZS'),
+('UAH'),
+('CZK'),
+('SEK'),
+('CHF'),
+('ZAR'),
+('KRW'),
+('JPY');
+
+-- drop if exists
+DROP TABLE IF EXISTS OPERATION_TYPES CASCADE;
+
+CREATE TABLE OPERATION_TYPES
+(id SERIAL, -- ID операции
+ type_name VARCHAR(5), -- Название операции
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(type_name),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(type_name IS NOT NULL)
+);
+
+-- insert default values
+INSERT INTO public.OPERATION_TYPES(
+	type_name
+)
+VALUES('get'),
+('give')

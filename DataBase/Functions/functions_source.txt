@@ -1,0 +1,205 @@
+-------------------
+-- REGISTER_USER --
+-------------------
+CREATE OR REPLACE FUNCTION REGISTER_USER(
+	new_first_name VARCHAR(30), -- Имя
+	new_surname VARCHAR(30), -- Фамилия
+	new_date_of_birth VARCHAR(10), -- Дата рождения
+	new_phone VARCHAR(10), -- Номер телефона
+	new_pass_series VARCHAR(6), -- Серия паспорта
+	new_pass_number VARCHAR(8), -- Номер паспорта
+	new_login VARCHAR(16), -- Логин
+	new_user_password VARCHAR(16), -- Пароль
+	new_patronymic VARCHAR(30) default NULL -- Отчество
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+-- Пользователь уже зарегистрирован
+	IF EXISTS(
+		SELECT * FROM public.USERS
+		WHERE first_name = new_first_name AND
+		surname = new_surname AND
+		pass_series = new_pass_series AND
+		pass_number = new_pass_number
+	) THEN
+		RETURN 1;
+	END IF;
+-- Логин занят
+	IF EXISTS(
+		SELECT * FROM public.AUTH
+		WHERE login = new_login
+	) THEN
+		RETURN 2;
+	END IF;
+-- Пользователь не зарегистрирован и логин свободен
+	INSERT INTO public.USERS(
+	first_name, surname, patronymic, date_of_birth, phone, pass_series, pass_number)
+	VALUES (new_first_name, new_surname, new_patronymic, new_date_of_birth, new_phone, new_pass_series, new_pass_number);
+	INSERT INTO public.AUTH(
+	user_id, login, user_password)
+	SELECT id as new_user_id, new_login, new_user_password
+	FROM public.USERS
+	WHERE first_name = new_first_name AND
+		surname = new_surname AND
+		pass_series = new_pass_series AND
+		pass_number = new_pass_number;
+	RETURN 0;
+END;
+$$;
+
+--------------------------
+-- FIND_USER_WITH_LOGIN --
+--------------------------
+CREATE OR REPLACE FUNCTION FIND_USER_WITH_LOGIN(
+	input_login VARCHAR(16) -- Логин
+)
+RETURNS TABLE(
+	login VARCHAR(16), -- Логин
+	first_name VARCHAR(30), -- Имя
+	surname VARCHAR(30), -- Фамилия
+	patronymic VARCHAR(30), -- Отчество
+	date_of_birth VARCHAR(10), -- Дата рождения
+	phone VARCHAR(10), -- Номер телефона
+	pass_series VARCHAR(6), -- Серия паспорта
+	pass_number VARCHAR(8) -- Номер паспорта
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+	RETURN QUERY
+	SELECT public.AUTH.login, public.USERS.first_name, public.USERS.surname,
+		public.USERS.patronymic, public.USERS.date_of_birth, public.USERS.phone,
+		public.USERS.pass_series, public.USERS.pass_number
+	FROM public.USERS 
+	JOIN public.AUTH ON public.USERS.id = public.AUTH.user_id
+	WHERE public.AUTH.login = input_login;
+	
+END;
+$$;
+
+----------------------------------
+-- FIND_USER_WITH_PERSONAL_DATA --
+----------------------------------
+CREATE OR REPLACE FUNCTION FIND_USER_WITH_PERSONAL_DATA(
+	input_first_name VARCHAR(30), -- Имя
+	input_surname VARCHAR(30), -- Фамилия
+	input_pass_series VARCHAR(6), -- Серия паспорта
+	input_pass_number VARCHAR(8) -- Номер паспорта
+)
+RETURNS TABLE(
+	login VARCHAR(16), -- Логин
+	first_name VARCHAR(30), -- Имя
+	surname VARCHAR(30), -- Фамилия
+	patronymic VARCHAR(30), -- Отчество
+	date_of_birth VARCHAR(10), -- Дата рождения
+	phone VARCHAR(10), -- Номер телефона
+	pass_series VARCHAR(6), -- Серия паспорта
+	pass_number VARCHAR(8) -- Номер паспорта
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+	RETURN QUERY
+	SELECT public.AUTH.login, public.USERS.first_name, public.USERS.surname,
+		public.USERS.patronymic, public.USERS.date_of_birth, public.USERS.phone,
+		public.USERS.pass_series, public.USERS.pass_number
+	FROM public.USERS 
+	JOIN public.AUTH ON public.USERS.id = public.AUTH.user_id
+	WHERE public.USERS.first_name = input_first_name AND
+	public.USERS.surname = input_surname AND
+	public.USERS.pass_series = input_pass_series AND
+	public.USERS.pass_number = input_pass_number;
+END;
+$$;
+
+------------------
+-- CHANGE LOGIN --
+------------------
+CREATE OR REPLACE FUNCTION CHANGE_LOGIN(
+	input_login VARCHAR(16),
+	new_login VARCHAR(16)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	-- Логины совпадают
+	IF input_login = new_login THEN
+		RETURN 1;
+	END IF;
+	-- Логин занят
+	IF EXISTS(
+		SELECT * FROM public.AUTH
+		WHERE login = new_login
+	) THEN
+		RETURN 2;
+	END IF;
+	-- Неверный логин
+	IF NOT EXISTS(
+		SELECT * FROM public.AUTH
+		WHERE login = input_login
+	) THEN
+		RETURN 3;
+	END IF;
+	-- Логин свободен и не совпадает
+	UPDATE public.AUTH
+	SET login = new_login
+	WHERE login = input_login;
+	RETURN 0;
+END;
+$$;
+
+---------------------
+-- CHANGE_PASSWORD --
+---------------------
+CREATE OR REPLACE FUNCTION CHANGE_PASSWORD(
+	input_login VARCHAR(16),
+	new_password VARCHAR(16)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	-- Пароли совпадают
+	IF EXISTS(
+		SELECT * FROM public.AUTH
+		WHERE login = input_login AND
+		user_password = new_password
+	) THEN
+		RETURN 1;
+	END IF;
+	-- Неверный логин
+	IF NOT EXISTS(
+		SELECT * FROM public.AUTH
+		WHERE login = input_login
+	) THEN
+		RETURN 2;
+	END IF;
+	-- Пароль новый
+	UPDATE public.AUTH
+	SET user_password = new_password
+	WHERE login = input_login;
+	RETURN 0;
+END;
+$$;
+
+------------------
+-- GET_PASSWORD --
+------------------
+CREATE OR REPLACE FUNCTION GET_PASSWORD(
+	input_login VARCHAR(16)
+)
+RETURNS VARCHAR(16)
+LANGUAGE plpgsql AS $$
+BEGIN
+	-- Неверный логин
+	IF NOT EXISTS(
+		SELECT * FROM public.AUTH
+		WHERE login = input_login
+	) THEN
+		RETURN 'ERR';
+	END IF;
+	-- 
+	RETURN user_password FROM public.AUTH
+	WHERE login = input_login;
+END;
+$$;
+
+SELECT * FROM GET_PASSWORD('banysk');

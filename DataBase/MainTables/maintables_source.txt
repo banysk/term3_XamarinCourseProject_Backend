@@ -1,0 +1,90 @@
+-- drop if exists
+DROP TABLE IF EXISTS AUTH CASCADE;
+
+CREATE TABLE AUTH
+(user_id INT, -- ID пользователя
+ login VARCHAR(16), -- Логин пользователя
+ user_password VARCHAR(16), -- Пароль пользователя
+ -----
+ PRIMARY KEY(login),
+ UNIQUE(user_id),
+ FOREIGN KEY(user_id)
+ 	REFERENCES public.USERS(id)
+ 	ON DELETE CASCADE,
+ -----
+ CHECK(user_id IS NOT NULL),
+ CHECK(login IS NOT NULL),
+ CHECK(LENGHT(user_password) >= 6)
+);
+
+-- drop if exists
+DROP TABLE IF EXISTS BILLS CASCADE;
+
+CREATE TABLE BILLS
+(id SERIAL, -- ID счёта
+ bill_number VARCHAR(20), -- Номер счёта
+ user_id INT, -- ID пользователя
+ currency INT, -- Валюта
+ balance INT, -- Баланс
+ bill_type INT, -- Тип счёта
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(bill_number),
+ FOREIGN KEY(user_id)
+ 	REFERENCES public.USERS(id),
+ FOREIGN KEY(currency)
+ 	REFERENCES public.CURRENCY_TYPES(id),
+ FOREIGN KEY(bill_type)
+ 	REFERENCES public.BILL_TYPES(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(LENGTH(bill_number) >= 16),
+ CHECK(user_id IS NOT NULL),
+ CHECK(currency IS NOT NULL),
+ CHECK(balance IS NOT NULL),
+ CHECK(bill_type IS NOT NULL)
+);
+
+-- drop if exists
+DROP TABLE IF EXISTS PATTERNS CASCADE;
+
+CREATE TABLE PATTERNS
+(user_id INT, -- ID пользователя
+ pattern_name VARCHAR(20), -- Название шаблона
+ bill_number VARCHAR(20), -- Куда
+ amount INT, -- Сколько
+ -----
+ foreign key(user_id)
+ 	references public.USERS(id),
+ unique(user_id, pattern_name),
+ -----
+ CHECK(user_id is not null),
+ CHECK(pattern_name is not null),
+ CHECK(LENGTH(bill_number) >= 16),
+ CHECK(amount is not null)
+);
+
+-- drop if exists
+DROP TABLE IF EXISTS USERS CASCADE;
+
+CREATE TABLE USERS
+(id SERIAL, -- ID пользователя
+ first_name VARCHAR(30), -- Имя
+ surname VARCHAR(30), -- Фамилия
+ patronymic VARCHAR(30), -- Отчество
+ date_of_birth VARCHAR(10), -- Дата рождения
+ phone VARCHAR(10), -- Номер телефона
+ pass_series VARCHAR(6), -- Серия паспорта
+ pass_number VARCHAR(8), -- Номер паспорта
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(first_name, surname, pass_series, pass_number),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(first_name IS NOT NULL),
+ CHECK(surname IS NOT NULL),
+ CHECK(LENGTH(date_of_birth) = 10),
+ CHECK(LENGTH(phone) = 10),
+ CHECK(LENGTH(pass_series) = 4),
+ CHECK(LENGTH(pass_number) = 6)
+);

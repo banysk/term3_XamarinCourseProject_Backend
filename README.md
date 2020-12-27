@@ -5,14 +5,14 @@
 ### Main Tables
 #### users:white_check_mark:    
 [register_user (function)](#register_userwhite_check_mark)    
-find_user_with_login (function)    
-find_user_with_personal_data (function)    
+[find_user_with_login (function)](find_user_with_loginwhite_check_mark)    
+[find_user_with_personal_data (function)](find_user_with_personal_datawhite_check_mark)    
 #### auth:white_check_mark:    
-register_user (function)    
-change_login (function)    
-change_password (function)    
-get_password (function)    
-trigger_auth_changed (trigger)    
+[register_user (function)](register_userwhite_check_mark)    
+[change_login (function)](change_loginwhite_check_mark)    
+[change_password (function)](change_passwordwhite_check_mark)    
+[get_password (function)](get_passwordwhite_check_mark)    
+[trigger_auth_changed (trigger)](trigger_auth_changedwhite_check_mark)    
 #### bills | created | ...    
 #### patterns | created | ...   
 
@@ -43,6 +43,7 @@ return:
 0 - success    
 1 - already registered    
 2 - login is already taken    
+____
 #### find_user_with_login:white_check_mark:    
 args:    
 input_login VARCHAR(16)    
@@ -57,6 +58,7 @@ phone VARCHAR(10),
 pass_series VARCHAR(6),    
 pass_number VARCHAR(8)    
 }    
+____
 #### find_user_with_personal_data:white_check_mark:    
 args:    
 input_first_name VARCHAR(30),    
@@ -74,6 +76,7 @@ phone VARCHAR(10),
 pass_series VARCHAR(6),    
 pass_number VARCHAR(8)    
 }    
+____
 #### change_login:white_check_mark:    
 args:    
 input_login VARCHAR(16),    
@@ -82,7 +85,8 @@ return:
 0 - success    
 1 - logins are equal    
 2 - login is already taken    
-3 - wrong login    
+3 - wrong login   
+____
 #### change_password:white_check_mark:    
 args:    
 input_login VARCHAR(16),    
@@ -90,7 +94,8 @@ new_password VARCHAR(16)
 return:    
 0 - success    
 1 - passwords are equal    
-2 - wrong login    
+2 - wrong login   
+____
 #### get_password:white_check_mark:    
 args:    
 input_login VARCHAR(16)    

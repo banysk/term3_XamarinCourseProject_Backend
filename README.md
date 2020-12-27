@@ -4,7 +4,7 @@
 ## DataBase
 ### Main Tables
 #### users:white_check_mark:    
-[register_user (function)](#register_user:white_check_mark:)    
+[register_user (function)](#register_user)    
 find_user_with_login (function)    
 find_user_with_personal_data (function)    
 #### auth:white_check_mark:    
@@ -101,3 +101,7 @@ ERR - wrong login
 ### Triggers
 #### trigger_auth_changed:white_check_mark:     
 inserts info about changing login or password into AUTH_CHANGES    
+
+
+
+[Вверх](#XamarinCourseProject_Backend)

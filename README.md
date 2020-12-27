@@ -5,28 +5,28 @@
 ### Main Tables
 #### users:white_check_mark:    
 [register_user (function)](#register_userwhite_check_mark)    
-[find_user_with_login (function)](find_user_with_loginwhite_check_mark)    
-[find_user_with_personal_data (function)](find_user_with_personal_datawhite_check_mark)    
+[find_user_with_login (function)](#find_user_with_loginwhite_check_mark)    
+[find_user_with_personal_data (function)](#find_user_with_personal_datawhite_check_mark)    
 #### auth:white_check_mark:    
-[register_user (function)](register_userwhite_check_mark)    
-[change_login (function)](change_loginwhite_check_mark)    
-[change_password (function)](change_passwordwhite_check_mark)    
-[get_password (function)](get_passwordwhite_check_mark)    
-[trigger_auth_changed (trigger)](trigger_auth_changedwhite_check_mark)    
+[register_user (function)](#register_userwhite_check_mark)    
+[change_login (function)](#change_loginwhite_check_mark)    
+[change_password (function)](#change_passwordwhite_check_mark)    
+[get_password (function)](#get_passwordwhite_check_mark)    
+[trigger_auth_changed (trigger)](#trigger_auth_changedwhite_check_mark)    
 #### bills | created | ...    
 #### patterns | created | ...   
-    
+
 ### Change&History Tables
 #### auth_changes | created | ...    
 #### auth_history | created | ...    
 #### bills_history | created | ...   
-    
+
 ### Type Tables
 #### change_types:white_check_mark:    
 #### currency_types:white_check_mark:    
 #### bill_types:white_check_mark:    
 #### operation_types:white_check_mark:    
-    
+ 
 ### Functions
 #### register_user:white_check_mark:
 args:    
@@ -102,11 +102,7 @@ input_login VARCHAR(16)
 return:    
 user_password VARCHAR(16) - success    
 ERR - wrong login    
-    
+
 ### Triggers
 #### trigger_auth_changed:white_check_mark:     
 inserts info about changing login or password into AUTH_CHANGES    
-    
-    
-    
-[Вверх](#XamarinCourseProject_Backend)

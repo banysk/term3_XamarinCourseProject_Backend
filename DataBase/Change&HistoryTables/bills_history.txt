@@ -5,7 +5,7 @@ CREATE TABLE BILLS_HISTORY
 (id SERIAL, -- ID операции
  user_id INT, -- ID пользователя
  move_from INT, -- Откуда
- move_to VARCHAR(20), -- Куда
+ move_to INT, -- Куда
  bill_type INT, -- Тип операции
  -----
  PRIMARY KEY(id),
@@ -13,12 +13,14 @@ CREATE TABLE BILLS_HISTORY
  	REFERENCES public.USERS(id),
  FOREIGN KEY(move_from)
  	REFERENCES public.BILLS(id),
+ FOREIGN KEY(move_to)
+ 	REFERENCES public.BILLS(id),
  FOREIGN KEY(bill_type)
  	REFERENCES public.OPERATION_TYPES(id),
  -----
  CHECK(id IS NOT NULL),
  CHECK(user_id IS NOT NULL),
  CHECK(move_from IS NOT NULL),
- CHECK(LENGTH(move_to) >= 16),
+ CHECK(move_to IS NOT NULL),
  CHECK(bill_type IS NOT NULL)
 );

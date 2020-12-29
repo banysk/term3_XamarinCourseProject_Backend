@@ -202,4 +202,19 @@ BEGIN
 END;
 $$;
 
-SELECT * FROM GET_PASSWORD('banysk');
+-----------------
+-- CREATE_BILL --
+-----------------
+CREATE OR REPLACE FUNCTION CREATE_BILL(
+	user_id INT, -- ID пользователя
+	bill_number VARCHAR(20), -- Номер счёта
+	сurrency VARCHAR(3), -- Валюта
+	balance INT, -- Баланс
+	bill_type VARCHAR(10) -- Тип счёта
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+
+END;
+$$;

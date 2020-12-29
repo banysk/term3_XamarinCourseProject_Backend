@@ -2,7 +2,7 @@
 ## Server
 =/=/=/=/=/=/=/=/=/=
 ## DataBase
-### Main Tables
+### :star2:Main Tables
 #### users:white_check_mark:    
 [register_user (function)](#register_userwhite_check_mark)    
 [find_user_with_login (function)](#find_user_with_loginwhite_check_mark)    
@@ -14,24 +14,24 @@
 [get_password (function)](#get_passwordwhite_check_mark)    
 [trigger_auth_changed (trigger)](#trigger_auth_changedwhite_check_mark)    
 #### bills:
-create_bill (function)
-get_bills (function)
-do_operation (function)
-trigger_bills_changed (trigger)
+create_bill (function)    
+get_bills (function)    
+do_operation (function)    
+trigger_bills_changed (trigger)    
 #### patterns | created | ...   
 
-### Change&History Tables
+### :star2:Change&History Tables
 #### auth_changes | created | ...    
 #### auth_history | created | ...    
 #### bills_history | created | ...   
 
-### Type Tables
+### :star2:Type Tables
 #### change_types:white_check_mark:    
 #### currency_types:white_check_mark:    
 #### bill_types:white_check_mark:    
 #### operation_types:white_check_mark:    
  
-### Functions
+### :star2:Functions
 #### register_user:white_check_mark:
 args:    
 new_first_name VARCHAR(30),    
@@ -120,7 +120,7 @@ args:
 return:
 ____
 
-### Triggers
+### :star2:Triggers
 #### trigger_auth_changed:white_check_mark:     
 inserts info about changing login or password into AUTH_CHANGES    
 ____

@@ -13,7 +13,7 @@
 [change_password (function)](#change_passwordwhite_check_mark)    
 [get_password (function)](#get_passwordwhite_check_mark)    
 [trigger_auth_changed (trigger)](#trigger_auth_changedwhite_check_mark)    
-#### bills:
+#### bills
 create_bill (function)    
 get_bills (function)    
 do_operation (function)    

@@ -13,7 +13,11 @@
 [change_password (function)](#change_passwordwhite_check_mark)    
 [get_password (function)](#get_passwordwhite_check_mark)    
 [trigger_auth_changed (trigger)](#trigger_auth_changedwhite_check_mark)    
-#### bills | created | ...    
+#### bills:
+create_bill (function)
+get_bills (function)
+do_operation (function)
+trigger_bills_changed (trigger)
 #### patterns | created | ...   
 
 ### Change&History Tables
@@ -102,7 +106,22 @@ input_login VARCHAR(16)
 return:    
 user_password VARCHAR(16) - success    
 ERR - wrong login    
+____
+#### create_bill
+args:
+return:
+____
+#### get_bills
+args:
+return:
+____
+#### do_operation
+args:
+return:
+____
 
 ### Triggers
 #### trigger_auth_changed:white_check_mark:     
 inserts info about changing login or password into AUTH_CHANGES    
+____
+#### trigger_bills_changed

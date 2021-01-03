@@ -38,16 +38,20 @@ get_bills_history (function)
  
 ### :star2:Functions
 #### register_user:white_check_mark:
-args:    
-new_first_name VARCHAR(30),    
-new_surname VARCHAR(30),    
-new_date_of_birth VARCHAR(10),    
-new_phone VARCHAR(10),    
-new_pass_series VARCHAR(6),    
-new_pass_number VARCHAR(8),    
-new_login VARCHAR(16),    
-new_user_password VARCHAR(16),    
-new_patronymic VARCHAR(30) default NULL    
+<details>
+  <summary>args</summary>
+  
+  new_first_name VARCHAR(30),    
+  new_surname VARCHAR(30),    
+  new_date_of_birth VARCHAR(10),    
+  new_phone VARCHAR(10),    
+  new_pass_series VARCHAR(6),    
+  new_pass_number VARCHAR(8),    
+  new_login VARCHAR(16),    
+  new_user_password VARCHAR(16),    
+  new_patronymic VARCHAR(30) default NULL  
+  
+</details>  
 return:    
 0 - success    
 1 - already registered    

@@ -28,7 +28,7 @@
  
   [create_bill (function)](#create_billwhite_check_mark)    
   [get_bills (function)](#get_billswhite_check_mark)    
-  do_operation (function)    
+  [do_operation (function)](#do_operationwhite_check_mark)    
   trigger_bills_changed (trigger) 
   
 </details> 
@@ -234,17 +234,21 @@
 </details>
 
 ***
-#### do_operation
+#### do_operation:white_check_mark:  
 <details>
   <summary>args</summary>
-  
-    -
+	
+  input_bill_from VARCHAR(20),    
+  input_bill_to VARCHAR(20),    
+  input_amount INT    
   
 </details>
 <details>
   <summary>return</summary>
   
-  -
+  0 - success
+  1 - wrong bills
+  2 - wrong currency
   
 </details>
 

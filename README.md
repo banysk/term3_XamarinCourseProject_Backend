@@ -231,7 +231,7 @@ get_bills_history (function)
 </details>
 
 ***
-#### get_patterns
+#### get_patterns:white_check_mark:  
 <details>
   <summary>args</summary>
   
@@ -245,7 +245,7 @@ get_bills_history (function)
   user_id INT,    
 	 pattern_name VARCHAR(20),    
 	 bill_number VARCHAR(20),    
-	 amount INT
+	 amount INT    
   }
   
 </details>

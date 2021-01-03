@@ -23,13 +23,12 @@
   
 </details> 
 
-#### bills
+#### bills:white_check_mark: 
 <details>
  
   [create_bill (function)](#create_billwhite_check_mark)    
   [get_bills (function)](#get_billswhite_check_mark)    
   [do_operation (function)](#do_operationwhite_check_mark)    
-  trigger_bills_changed (trigger) 
   
 </details> 
    
@@ -345,5 +344,3 @@
 ### :star2:Triggers
 #### trigger_auth_changed:white_check_mark:     
 inserts info about changing login or password into AUTH_CHANGES    
-____
-#### trigger_bills_changed

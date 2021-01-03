@@ -246,9 +246,9 @@
 <details>
   <summary>return</summary>
   
-  0 - success
-  1 - wrong bills
-  2 - wrong currency
+  0 - success    
+  1 - wrong bills    
+  2 - wrong currency    
   
 </details>
 
@@ -266,8 +266,8 @@
 <details>
   <summary>return</summary>
   
-  0 - success   
-  1 - exists    
+  0 - success     
+  1 - exists     
   2 - wrong bill number
   
 </details>

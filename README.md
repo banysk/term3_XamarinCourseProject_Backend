@@ -211,17 +211,22 @@ get_bills_history (function)
 </details>
 
 ***
-#### create_pattern
+#### create_pattern:white_check_mark:    
 <details>
   <summary>args</summary>
   
-    -
+  input_user_id INT,
+  input_pattern_name VARCHAR(20),
+  input_bill_number VARCHAR(20),
+  input_amount INT
   
 </details>
 <details>
   <summary>return</summary>
   
-  -
+  0 - success
+  1 - exists
+  2 - wrong bill number
   
 </details>
 

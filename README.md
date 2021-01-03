@@ -241,7 +241,7 @@ get_bills_history (function)
 <details>
   <summary>return</summary>
   
-  {
+  {    
   user_id INT,    
 	 pattern_name VARCHAR(20),    
 	 bill_number VARCHAR(20),    
@@ -251,47 +251,55 @@ get_bills_history (function)
 </details>
 
 ***
-#### add_visit
+#### add_visit:white_check_mark:
 <details>
   <summary>args</summary>
   
-    -
+  input_user_id INT
   
 </details>
 <details>
   <summary>return</summary>
   
-  -
+  0 - success
   
 </details>
 
 ***
-#### get_auth_history
+#### get_auth_history:white_check_mark:
 <details>
   <summary>args</summary>
   
-    -
+  input_user_id INT
   
 </details>
 <details>
   <summary>return</summary>
   
-  -
+  {    
+  user_id INT,    
+  visit_time TIMESTAMP    
+  }    
   
 </details>
 
 ***
-#### get_bills_history
+#### get_bills_history:white_check_mark:
 <details>
   <summary>args</summary>
   
-    -
+  input_user_id INT
   
 </details>
 <details>
   <summary>return</summary>
   
-  -
+  {    
+  user_id INT, -- ID пользователя    
+  move_from INT, -- Откуда    
+  move_to INT, -- Куда    
+  bill_type INT -- Тип операции    
+  }    
   
 </details>  
 

@@ -59,67 +59,107 @@ get_bills_history (function)
   1 - already registered    
   2 - login is already taken   
   
-</details>      
-____
-#### find_user_with_login:white_check_mark:    
-args:    
-input_login VARCHAR(16)    
-return:    
-{    
-login VARCHAR(16),    
-first_name VARCHAR(30),    
-surname VARCHAR(30),    
-patronymic VARCHAR(30),    
-date_of_birth VARCHAR(10),    
-phone VARCHAR(10),    
-pass_series VARCHAR(6),    
-pass_number VARCHAR(8)    
-}    
-____
-#### find_user_with_personal_data:white_check_mark:    
-args:    
-input_first_name VARCHAR(30),    
-input_surname VARCHAR(30),    
-input_pass_series VARCHAR(6),    
-input_pass_number VARCHAR(8)    
-return:    
-{    
-login VARCHAR(16),    
-first_name VARCHAR(30),    
-surname VARCHAR(30),    
-patronymic VARCHAR(30),    
-date_of_birth VARCHAR(10),    
-phone VARCHAR(10),    
-pass_series VARCHAR(6),    
-pass_number VARCHAR(8)    
-}    
-____
+</details>
+
+#### find_user_with_login:white_check_mark:  
+<details>
+  <summary>args</summary>
+  
+  input_login VARCHAR(16)   
+  
+</details>    
+<details>
+  <summary>return</summary>
+  
+  {    
+  login VARCHAR(16),    
+  first_name VARCHAR(30),    
+  surname VARCHAR(30),    
+  patronymic VARCHAR(30),    
+  date_of_birth VARCHAR(10),    
+  phone VARCHAR(10),    
+  pass_series VARCHAR(6),    
+  pass_number VARCHAR(8)    
+  }    
+  
+</details>
+
+#### find_user_with_personal_data:white_check_mark:  
+<details>
+  <summary>args</summary>
+  
+  input_first_name VARCHAR(30),    
+  input_surname VARCHAR(30),    
+  input_pass_series VARCHAR(6),    
+  input_pass_number VARCHAR(8)  
+  
+</details>  
+<details>
+  <summary>return</summary>
+  
+  {    
+  login VARCHAR(16),    
+  first_name VARCHAR(30),    
+  surname VARCHAR(30),    
+  patronymic VARCHAR(30),    
+  date_of_birth VARCHAR(10),    
+  phone VARCHAR(10),    
+  pass_series VARCHAR(6),    
+  pass_number VARCHAR(8)    
+}   
+  
+</details>
+
 #### change_login:white_check_mark:    
-args:    
-input_login VARCHAR(16),    
-new_login VARCHAR(16)    
-return:    
-0 - success    
-1 - logins are equal    
-2 - login is already taken    
-3 - wrong login   
-____
+<details>
+  <summary>args</summary>
+  
+  input_login VARCHAR(16),    
+  new_login VARCHAR(16)    
+  
+</details>  
+<details>
+  <summary>return</summary>
+  
+  0 - success    
+  1 - logins are equal    
+  2 - login is already taken    
+  3 - wrong login  
+  
+</details>
+
 #### change_password:white_check_mark:    
-args:    
-input_login VARCHAR(16),    
-new_password VARCHAR(16)    
-return:    
-0 - success    
-1 - passwords are equal    
-2 - wrong login   
-____
+<details>
+  <summary>args</summary>
+  
+  input_login VARCHAR(16),    
+  new_password VARCHAR(16)  
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  0 - success    
+  1 - passwords are equal    
+  2 - wrong login 
+  
+</details>
+
 #### get_password:white_check_mark:    
-args:    
-input_login VARCHAR(16)    
-return:    
-user_password VARCHAR(16) - success    
-ERR - wrong login    
-____
+<details>
+  <summary>args</summary>
+  
+  input_login VARCHAR(16)  
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  user_password VARCHAR(16) - success    
+  ERR - wrong login   
+  
+</details>
+
 #### create_bill
 args:   
 return:

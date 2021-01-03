@@ -235,13 +235,18 @@ get_bills_history (function)
 <details>
   <summary>args</summary>
   
-    -
+  input_user_id INT
   
 </details>
 <details>
   <summary>return</summary>
   
-  -
+  {
+  user_id INT,    
+	 pattern_name VARCHAR(20),    
+	 bill_number VARCHAR(20),    
+	 amount INT
+  }
   
 </details>
 

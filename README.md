@@ -18,12 +18,17 @@ create_bill (function)
 get_bills (function)    
 do_operation (function)    
 trigger_bills_changed (trigger)    
-#### patterns | created | ...   
+#### patterns
+create_pattern (function)   
+get_patterns (function)
 
 ### :star2:Change&History Tables
 #### auth_changes:white_check_mark:  
-#### auth_history | created | ...    
-#### bills_history | created | ...   
+#### auth_history
+add_visit (function)    
+get_auth_history (function)
+#### bills_history
+get_billhistory (function)
 
 ### :star2:Type Tables
 #### change_types:white_check_mark:    

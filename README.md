@@ -208,7 +208,7 @@
 <details>
   <summary>return</summary>
   
-  0 - success
+  0 - success    
   1 - bill exists
   
 </details>

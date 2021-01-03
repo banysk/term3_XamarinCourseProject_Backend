@@ -51,11 +51,15 @@ get_bills_history (function)
   new_user_password VARCHAR(16),    
   new_patronymic VARCHAR(30) default NULL  
   
-</details>  
-return:    
-0 - success    
-1 - already registered    
-2 - login is already taken    
+</details>    
+<details>
+  <summary>return</summary>
+  
+  0 - success    
+  1 - already registered    
+  2 - login is already taken   
+  
+</details>      
 ____
 #### find_user_with_login:white_check_mark:    
 args:    

@@ -334,9 +334,10 @@
   <summary>return</summary>
   
   {      
-  move_from INT, -- Откуда    
-  move_to INT, -- Куда    
-  bill_type INT -- Тип операции    
+  move_from VARCHAR(20), -- Откуда    
+  move_to VARCHAR(20), -- Куда    
+  amount INT, -- Сколько    
+  operation_type VARCHAR(5) -- Тип операции    
   }    
   
 </details>  

@@ -61,6 +61,7 @@ get_bills_history (function)
   
 </details>
 
+***
 #### find_user_with_login:white_check_mark:  
 <details>
   <summary>args</summary>
@@ -84,6 +85,7 @@ get_bills_history (function)
   
 </details>
 
+***
 #### find_user_with_personal_data:white_check_mark:  
 <details>
   <summary>args</summary>
@@ -110,6 +112,7 @@ get_bills_history (function)
   
 </details>
 
+***
 #### change_login:white_check_mark:    
 <details>
   <summary>args</summary>
@@ -128,6 +131,7 @@ get_bills_history (function)
   
 </details>
 
+***
 #### change_password:white_check_mark:    
 <details>
   <summary>args</summary>
@@ -145,6 +149,7 @@ get_bills_history (function)
   
 </details>
 
+***
 #### get_password:white_check_mark:    
 <details>
   <summary>args</summary>
@@ -160,37 +165,125 @@ get_bills_history (function)
   
 </details>
 
+***
 #### create_bill
-args:   
-return:
-____
+<details>
+  <summary>args</summary>
+  
+    -
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  -
+  
+</details>
+
+***
 #### get_bills
-args:   
-return:
-____
+<details>
+  <summary>args</summary>
+  
+    -
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  -
+  
+</details>
+
+***
 #### do_operation
-args:   
-return:
-____
+<details>
+  <summary>args</summary>
+  
+    -
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  -
+  
+</details>
+
+***
 #### create_pattern
-args:    
-return:    
-____
+<details>
+  <summary>args</summary>
+  
+    -
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  -
+  
+</details>
+
+***
 #### get_patterns
-args:    
-return:    
-____
+<details>
+  <summary>args</summary>
+  
+    -
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  -
+  
+</details>
+
+***
 #### add_visit
-args:    
-return:    
-____
+<details>
+  <summary>args</summary>
+  
+    -
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  -
+  
+</details>
+
+***
 #### get_auth_history
-args:    
-return:    
-____
+<details>
+  <summary>args</summary>
+  
+    -
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  -
+  
+</details>
+
+***
 #### get_bills_history
-args:    
-return:  
+<details>
+  <summary>args</summary>
+  
+    -
+  
+</details>
+<details>
+  <summary>return</summary>
+  
+  -
+  
+</details>  
 
 ### :star2:Triggers
 #### trigger_auth_changed:white_check_mark:     

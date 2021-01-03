@@ -26,8 +26,8 @@
 #### bills
 <details>
  
-  create_bill (function)    
-  get_bills (function)    
+  [create_bill (function)](#create_billwhite_check_mark)    
+  [get_bills (function)](#get_billswhite_check_mark)    
   do_operation (function)    
   trigger_bills_changed (trigger) 
   
@@ -194,32 +194,42 @@
 </details>
 
 ***
-#### create_bill
+#### create_bill:white_check_mark:
 <details>
   <summary>args</summary>
   
-    -
+  input_bill_number VARCHAR(20),    
+  input_user_id INT,    
+  input_currency VARCHAR(3),    
+  input_balance INT,    
+  input_bill_type VARCHAR(10)    
   
 </details>
 <details>
   <summary>return</summary>
   
-  -
+  0 - success
+  1 - bill exists
   
 </details>
 
 ***
-#### get_bills
+#### get_bills:white_check_mark:
 <details>
   <summary>args</summary>
   
-    -
+  input_user_id INT
   
 </details>
 <details>
   <summary>return</summary>
   
-  -
+  {    
+  bill_number VARCHAR(20),    
+	 currency VARCHAR(3),    
+	 bill_type VARCHAR(10),    
+	 balance INT    
+  }    
   
 </details>
 

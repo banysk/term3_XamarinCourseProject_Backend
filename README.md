@@ -21,7 +21,7 @@ trigger_bills_changed (trigger)
 #### patterns | created | ...   
 
 ### :star2:Change&History Tables
-#### auth_changes | created | ...    
+#### auth_changes:white_check_mark:  
 #### auth_history | created | ...    
 #### bills_history | created | ...   
 
@@ -108,15 +108,15 @@ user_password VARCHAR(16) - success
 ERR - wrong login    
 ____
 #### create_bill
-args:
+args:   
 return:
 ____
 #### get_bills
-args:
+args:   
 return:
 ____
 #### do_operation
-args:
+args:   
 return:
 ____
 

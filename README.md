@@ -4,31 +4,59 @@
 ## DataBase
 ### :star2:Main Tables
 #### users:white_check_mark:    
-[register_user (function)](#register_userwhite_check_mark)    
-[find_user_with_login (function)](#find_user_with_loginwhite_check_mark)    
-[find_user_with_personal_data (function)](#find_user_with_personal_datawhite_check_mark)    
+<details>
+ 
+  [register_user (function)](#register_userwhite_check_mark)    
+  [find_user_with_login (function)](#find_user_with_loginwhite_check_mark)    
+  [find_user_with_personal_data (function)](#find_user_with_personal_datawhite_check_mark)  
+  
+</details>    
+  
 #### auth:white_check_mark:    
-[register_user (function)](#register_userwhite_check_mark)    
-[change_login (function)](#change_loginwhite_check_mark)    
-[change_password (function)](#change_passwordwhite_check_mark)    
-[get_password (function)](#get_passwordwhite_check_mark)    
-[trigger_auth_changed (trigger)](#trigger_auth_changedwhite_check_mark)    
+<details>
+ 
+  [register_user (function)](#register_userwhite_check_mark)    
+  [change_login (function)](#change_loginwhite_check_mark)    
+  [change_password (function)](#change_passwordwhite_check_mark)    
+  [get_password (function)](#get_passwordwhite_check_mark)    
+  [trigger_auth_changed (trigger)](#trigger_auth_changedwhite_check_mark)    
+  
+</details> 
+
 #### bills
-create_bill (function)    
-get_bills (function)    
-do_operation (function)    
-trigger_bills_changed (trigger)    
+<details>
+ 
+  create_bill (function)    
+  get_bills (function)    
+  do_operation (function)    
+  trigger_bills_changed (trigger) 
+  
+</details> 
+   
 #### patterns:white_check_mark:
-[create_pattern (function)](#create_patternwhite_check_mark)   
-[get_patterns (function)](#get_patternswhite_check_mark)
+<details>
+ 
+  [create_pattern (function)](#create_patternwhite_check_mark)   
+  [get_patterns (function)](#get_patternswhite_check_mark)
+  
+</details> 
 
 ### :star2:Change&History Tables
 #### auth_changes:white_check_mark:  
 #### auth_history:white_check_mark:
-[add_visit (function)](#add_visitwhite_check_mark)    
-[get_auth_history (function)](#get_auth_historywhite_check_mark)
+<details>
+ 
+  [add_visit (function)](#add_visitwhite_check_mark)    
+  [get_auth_history (function)](#get_auth_historywhite_check_mark)
+  
+</details> 
+
 #### bills_history:white_check_mark:
-[get_bills_history (function)](#get_bills_historywhite_check_mark)
+<details>
+
+  [get_bills_history (function)](#get_bills_historywhite_check_mark)
+
+</details> 
 
 ### :star2:Type Tables
 #### change_types:white_check_mark:    

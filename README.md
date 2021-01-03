@@ -28,7 +28,7 @@ get_patterns (function)
 add_visit (function)    
 get_auth_history (function)
 #### bills_history
-get_billhistory (function)
+get_bills_history (function)
 
 ### :star2:Type Tables
 #### change_types:white_check_mark:    
@@ -124,6 +124,25 @@ ____
 args:   
 return:
 ____
+#### create_pattern
+args:    
+return:    
+____
+#### get_patterns
+args:    
+return:    
+____
+#### add_visit
+args:    
+return:    
+____
+#### get_auth_history
+args:    
+return:    
+____
+#### get_bills_history
+args:    
+return:  
 
 ### :star2:Triggers
 #### trigger_auth_changed:white_check_mark:     

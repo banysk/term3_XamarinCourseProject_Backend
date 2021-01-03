@@ -206,15 +206,202 @@ $$;
 -- CREATE_BILL --
 -----------------
 CREATE OR REPLACE FUNCTION CREATE_BILL(
-	user_id INT, -- ID пользователя
-	bill_number VARCHAR(20), -- Номер счёта
-	сurrency VARCHAR(3), -- Валюта
-	balance INT, -- Баланс
-	bill_type VARCHAR(10) -- Тип счёта
+	input_bill_number VARCHAR(20), -- Номер счёта
+	input_user_id INT, -- ID пользователя
+	input_currency VARCHAR(3), -- Валюта
+	input_balance INT, -- Баланс
+	input_bill_type VARCHAR(10) -- Тип счёта
 )
 RETURNS INT
 LANGUAGE plpgsql AS $$
 BEGIN
-
+	IF EXISTS(
+		SELECT * FROM public.BILLS
+		WHERE bill_number = input_bill_number
+	)THEN
+		RETURN 1;
+	END IF;
+	
+	INSERT INTO public.BILLS(bill_number, user_id, currency, balance, bill_type)
+	SELECT input_bill_number, input_user_id, CURRENCY_TYPES.id, input_balance, BILL_TYPES.id
+	FROM CURRENCY_TYPES, BILL_TYPES
+	WHERE CURRENCY_TYPES.type_name = input_currency AND
+	BILL_TYPES.type_name = input_bill_type;
+	RETURN 0;
 END;
 $$;
+
+---------------
+-- GET_BILLS --
+---------------
+CREATE OR REPLACE FUNCTION GET_BILLS(
+	input_user_id INT -- ID пользователя
+)
+RETURNS TABLE(
+	bill_number VARCHAR(20), -- Номер счёта
+	currency VARCHAR(3), -- Валюта
+	bill_type VARCHAR(10), -- Тип счёта
+	balance INT -- Баланс
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+	RETURN QUERY SELECT BILLS.bill_number, CURRENCY_TYPES.type_name, BILL_TYPES.type_name, BILLS.balance FROM BILLS, CURRENCY_TYPES, BILL_TYPES
+	WHERE user_id = input_user_id AND
+	BILL_TYPES.id = BILLS.bill_type AND
+	CURRENCY_TYPES.id =  BILLS.currency;
+END;
+$$;
+
+------------------
+-- DO_OPERATION --
+------------------
+CREATE OR REPLACE FUNCTION DO_OPERATION(
+	input_bill_from VARCHAR(20),
+	input_bill_to VARCHAR(20),
+	input_amount INT
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+DECLARE currency_id INT;
+BEGIN
+	IF (SELECT COUNT(*) FROM BILLS
+	WHERE bill_number = input_bill_from OR
+	bill_number = input_bill_to) != 2 THEN 
+		RETURN 1;
+	END IF;
+	
+	currency_id := currency FROM BILLS
+	WHERE bill_number = input_bill_from;
+	
+	IF (SELECT COUNT(*) FROM BILLS
+	WHERE bill_number = input_bill_from OR
+	bill_number = input_bill_to AND
+	currency = currency_id)!= 2 THEN 
+		RETURN 2;
+	END IF;
+	
+	UPDATE BILLS
+	SET balance = balance - input_amount
+	WHERE bill_number = input_bill_from;
+	
+	INSERT INTO BILLS_HISTORY(user_id, move_from, move_to, amount, operation_type)
+	SELECT bills.user_id, input_bill_from, input_bill_to, input_amount, operation_types.id FROM bills, operation_types
+	WHERE bills.bill_number = input_bill_from AND
+	operation_types.type_name = 'give';
+
+	UPDATE BILLS
+	SET balance = balance + input_amount
+	WHERE bill_number = input_bill_to;
+	
+	INSERT INTO BILLS_HISTORY(user_id, move_from, move_to, amount, operation_type)
+	SELECT bills.user_id, input_bill_to, input_bill_from, input_amount, operation_types.id FROM bills, operation_types
+	WHERE bills.bill_number = input_bill_from AND
+	operation_types.type_name = 'get';
+	
+	RETURN 0;
+END;
+$$;
+
+--------------------
+-- CREATE_PATTERN --
+--------------------
+CREATE OR REPLACE FUNCTION CREATE_PATTERN(
+	input_user_id INT,
+	input_pattern_name VARCHAR(20),
+	input_bill_number VARCHAR(20),
+	input_amount INT
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	IF EXISTS(
+		SELECT * FROM public.PATTERNS
+		WHERE user_id = input_user_id AND
+		pattern_name = input_pattern_name
+	) THEN
+		RETURN 1;
+	END IF;
+	
+	IF NOT EXISTS(
+		SELECT * FROM public.BILLS
+		WHERE bill_number = input_bill_number
+	)THEN
+		RETURN 2;
+	END IF;
+	
+	INSERT INTO public.PATTERNS(user_id, pattern_name, bill_number, amount)
+	VALUES(input_user_id, input_pattern_name, input_bill_number, input_amount);
+	RETURN 0;
+END;
+$$;
+
+------------------
+-- GET_PATTERNS --
+------------------
+CREATE OR REPLACE FUNCTION GET_PATTERNS(
+	input_user_id INT
+)
+RETURNS TABLE(
+	pattern_name VARCHAR(20),
+	bill_number VARCHAR(20),
+	amount INT
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+	RETURN QUERY SELECT public.PATTERNS.pattern_name, public.PATTERNS.bill_number, public.PATTERNS.amount FROM public.PATTERNS
+	WHERE user_id = input_user_id;
+END;
+$$;
+
+---------------
+-- ADD_VISIT --
+---------------
+CREATE OR REPLACE FUNCTION ADD_VISIT(
+	input_user_id INT
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	INSERT INTO public.AUTH_HISTORY(user_id, visit_time)
+	VALUES(input_user_id, CURRENT_TIMESTAMP);
+	RETURN 0;
+END;
+$$;
+
+----------------------
+-- GET_AUTH_HISTORY --
+----------------------
+CREATE OR REPLACE FUNCTION GET_AUTH_HISTORY(
+	input_user_id INT
+)
+RETURNS TABLE(
+ 	visit_time TIMESTAMP -- Дата посещения
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+	RETURN QUERY SELECT public.AUTH_HISTORY.visit_time FROM public.AUTH_HISTORY
+	WHERE public.AUTH_HISTORY.user_id = input_user_id;
+END;
+$$;
+
+
+-----------------------
+-- GET_BILLS_HISTORY --
+-----------------------
+CREATE OR REPLACE FUNCTION GET_BILLS_HISTORY(
+	input_user_id INT
+)
+RETURNS TABLE(
+	move_from VARCHAR(20), -- Откуда
+	move_to VARCHAR(20), -- Куда
+	amount INT, -- Сколько
+	operation_type VARCHAR(5) -- Тип операции
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+	RETURN QUERY SELECT BILLS_HISTORY.move_from, BILLS_HISTORY.move_to, BILLS_HISTORY.amount, OPERATION_TYPES.type_name FROM BILLS_HISTORY, OPERATION_TYPES
+	WHERE user_id = input_user_id AND
+	OPERATION_TYPES.id = BILLS_HISTORY.operation_type;
+END;
+$$;
+

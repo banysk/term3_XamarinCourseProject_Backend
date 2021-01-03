@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS AUTH_HISTORY CASCADE;
 CREATE TABLE AUTH_HISTORY
 (id SERIAL, -- ID посещения
  user_id INT, -- ID пользователя
- visit_time DATE, -- Дата посещения
+ visit_time TIMESTAMP, -- Дата посещения
  -----
  PRIMARY KEY(id),
  FOREIGN KEY(user_id)

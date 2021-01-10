@@ -62,14 +62,15 @@ RETURNS TABLE(
 	date_of_birth VARCHAR(10), -- Дата рождения
 	phone VARCHAR(10), -- Номер телефона
 	pass_series VARCHAR(6), -- Серия паспорта
-	pass_number VARCHAR(8) -- Номер паспорта
+	pass_number VARCHAR(8), -- Номер паспорта
+	user_id INT
 )
 LANGUAGE plpgsql AS $$
 BEGIN
 	RETURN QUERY
 	SELECT public.AUTH.login, public.USERS.first_name, public.USERS.surname,
 		public.USERS.patronymic, public.USERS.date_of_birth, public.USERS.phone,
-		public.USERS.pass_series, public.USERS.pass_number
+		public.USERS.pass_series, public.USERS.pass_number, public.USERS.id
 	FROM public.USERS 
 	JOIN public.AUTH ON public.USERS.id = public.AUTH.user_id
 	WHERE public.AUTH.login = input_login;
@@ -284,8 +285,8 @@ BEGIN
 	SET balance = balance - input_amount
 	WHERE bill_number = input_bill_from;
 	
-	INSERT INTO BILLS_HISTORY(user_id, move_from, move_to, amount, operation_type)
-	SELECT bills.user_id, input_bill_from, input_bill_to, input_amount, operation_types.id FROM bills, operation_types
+	INSERT INTO BILLS_HISTORY(user_id, move_from, move_to, amount, operation_type, operation_time)
+	SELECT bills.user_id, input_bill_from, input_bill_to, input_amount, operation_types.id, CURRENT_TIMESTAMP FROM bills, operation_types
 	WHERE bills.bill_number = input_bill_from AND
 	operation_types.type_name = 'give';
 
@@ -293,8 +294,8 @@ BEGIN
 	SET balance = balance + input_amount
 	WHERE bill_number = input_bill_to;
 	
-	INSERT INTO BILLS_HISTORY(user_id, move_from, move_to, amount, operation_type)
-	SELECT bills.user_id, input_bill_to, input_bill_from, input_amount, operation_types.id FROM bills, operation_types
+	INSERT INTO BILLS_HISTORY(user_id, move_from, move_to, amount, operation_type, operation_time)
+	SELECT bills.user_id, input_bill_to, input_bill_from, input_amount, operation_types.id, CURRENT_TIMESTAMP FROM bills, operation_types
 	WHERE bills.bill_number = input_bill_from AND
 	operation_types.type_name = 'get';
 	
@@ -380,7 +381,9 @@ RETURNS TABLE(
 LANGUAGE plpgsql AS $$
 BEGIN
 	RETURN QUERY SELECT public.AUTH_HISTORY.visit_time FROM public.AUTH_HISTORY
-	WHERE public.AUTH_HISTORY.user_id = input_user_id;
+	WHERE public.AUTH_HISTORY.user_id = input_user_id
+	ORDER BY public.AUTH_HISTORY.visit_time DESC
+	LIMIT 30;
 END;
 $$;
 
@@ -395,11 +398,12 @@ RETURNS TABLE(
 	move_from VARCHAR(20), -- Откуда
 	move_to VARCHAR(20), -- Куда
 	amount INT, -- Сколько
-	operation_type VARCHAR(5) -- Тип операции
+	operation_type VARCHAR(5), -- Тип операции
+	operation_time TIMESTAMP -- Время операции
 )
 LANGUAGE plpgsql AS $$
 BEGIN
-	RETURN QUERY SELECT BILLS_HISTORY.move_from, BILLS_HISTORY.move_to, BILLS_HISTORY.amount, OPERATION_TYPES.type_name FROM BILLS_HISTORY, OPERATION_TYPES
+	RETURN QUERY SELECT BILLS_HISTORY.move_from, BILLS_HISTORY.move_to, BILLS_HISTORY.amount, OPERATION_TYPES.type_name, BILLS_HISTORY.operation_time FROM BILLS_HISTORY, OPERATION_TYPES
 	WHERE user_id = input_user_id AND
 	OPERATION_TYPES.id = BILLS_HISTORY.operation_type;
 END;

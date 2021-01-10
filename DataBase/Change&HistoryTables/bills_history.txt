@@ -1,5 +1,3 @@
-SELECT * FROM BILLS_HISTORY;
-
 -- drop if exists
 DROP TABLE IF EXISTS BILLS_HISTORY CASCADE;
 
@@ -10,6 +8,7 @@ CREATE TABLE BILLS_HISTORY
  move_to VARCHAR(20), -- Куда
  amount INT, -- Сколько
  operation_type INT, -- Тип операции
+ operation_time TIMESTAMP, -- Время операции
  -----
  PRIMARY KEY(id),
  FOREIGN KEY(user_id)
@@ -21,5 +20,6 @@ CREATE TABLE BILLS_HISTORY
  CHECK(user_id IS NOT NULL),
  CHECK(move_from IS NOT NULL),
  CHECK(move_to IS NOT NULL),
- CHECK(operation_type IS NOT NULL)
+ CHECK(operation_type IS NOT NULL),
+ CHECK(operation_time IS NOT NULL)
 );

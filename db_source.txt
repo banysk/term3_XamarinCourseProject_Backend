@@ -1,0 +1,1106 @@
+-----------
+-- USERS --
+-----------
+DROP TABLE IF EXISTS USERS CASCADE;
+CREATE TABLE USERS
+(id SERIAL, -- ID пользователя
+ firstname VARCHAR(30), -- Имя
+ surname VARCHAR(30), -- Фамилия
+ patronymic VARCHAR(30), -- Отчество
+ dob VARCHAR(10), -- Дата рождения
+ phone VARCHAR(10), -- Номер телефона
+ pass_series VARCHAR(6), -- Серия паспорта
+ pass_number VARCHAR(8), -- Номер паспорта
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(firstname, surname, pass_series, pass_number),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(firstname IS NOT NULL),
+ CHECK(surname IS NOT NULL),
+ CHECK(LENGTH(dob) = 10),
+ CHECK(LENGTH(phone) = 10),
+ CHECK(LENGTH(pass_series) = 4),
+ CHECK(LENGTH(pass_number) = 6)
+);
+----------
+-- AUTH --
+----------
+DROP TABLE IF EXISTS AUTH CASCADE;
+CREATE TABLE AUTH
+(user_id INT, -- ID пользователя
+ user_login VARCHAR(16), -- Логин пользователя
+ user_password VARCHAR(16), -- Пароль пользователя
+ -----
+ PRIMARY KEY(user_login),
+ UNIQUE(user_id),
+ FOREIGN KEY(user_id)
+ 	REFERENCES public.USERS(id),
+ -----
+ CHECK(user_id IS NOT NULL),
+ CHECK(LENGTH(user_login) >= 6),
+ CHECK(LENGTH(user_password) >= 6)
+);
+----------------
+-- CARD_TYPES --
+----------------
+DROP TABLE IF EXISTS CARD_TYPES CASCADE;
+CREATE TABLE CARD_TYPES
+(id SERIAL, -- ID типа карты
+ card_type VARCHAR(10), -- Название типа карты
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(card_type),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(card_type IS NOT NULL)
+);
+INSERT INTO public.CARD_TYPES(
+	card_type
+)
+VALUES('visa'),('mastercard'),('mir');
+---------------------
+-- OPERATION_TYPES --
+---------------------
+DROP TABLE IF EXISTS OPERATION_TYPES CASCADE;
+CREATE TABLE OPERATION_TYPES
+(id SERIAL, -- ID операции
+ operation_type VARCHAR(4), -- Название операции
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(operation_type),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(operation_type IS NOT NULL)
+);
+INSERT INTO public.OPERATION_TYPES(
+	operation_type
+)
+VALUES('get'),('give');
+------------------
+-- CHANGE_TYPES --
+------------------
+DROP TABLE IF EXISTS CHANGE_TYPES CASCADE;
+CREATE TABLE CHANGE_TYPES
+(id SERIAL, -- ID типа изменений
+ change_type VARCHAR(5), -- Название типа изменения
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(change_type),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(change_type IS NOT NULL)
+);
+INSERT INTO public.CHANGE_TYPES(
+	change_type
+)
+VALUES('login'),('pass');
+--------------------
+-- CURRENCY_TYPES --
+--------------------
+DROP TABLE IF EXISTS CURRENCY_TYPES CASCADE;
+CREATE TABLE CURRENCY_TYPES
+(id SERIAL, -- ID валюты
+ currency_type VARCHAR(3), -- Название валюты
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(currency_type),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(currency_type IS NOT NULL)
+);
+INSERT INTO public.CURRENCY_TYPES(
+	currency_type
+)
+VALUES('AUD'),('AZN'),('GBP'),('AMD'),('BYN'),('BGN'),('BRL'),('HUF'),('HKD'),('DKK'),('USD'),('EUR'),
+('INR'),('KZT'),('CAD'),('KGS'),('CNY'),('MDL'),('NOK'),('PLN'),('RON'),('XDR'),('SGD'),('TJS'),('TRY'),
+('TMT'),('UZS'),('UAH'),('CZK'),('SEK'),('CHF'),('ZAR'),('KRW'),('JPY'),('RUB');
+------------------
+-- AUTH_CHANGES --
+------------------
+DROP TABLE IF EXISTS AUTH_CHANGES CASCADE;
+CREATE TABLE AUTH_CHANGES
+(id SERIAL, -- ID изменения
+ user_id INT, -- ID пользователя
+ old_value VARCHAR(16), -- Изменение из
+ new_value VARCHAR(16), -- Изменение в
+ change_type INT, -- Тип изменения
+ -----
+ PRIMARY KEY(id),
+ FOREIGN KEY(user_id)
+ 	REFERENCES public.USERS(id),
+ FOREIGN KEY(change_type)
+	REFERENCES public.CHANGE_TYPES(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(user_id IS NOT NULL),
+ CHECK(old_value IS NOT NULL),
+ CHECK(new_value IS NOT NULL),
+ CHECK(change_type IS NOT NULL)
+);
+------------------
+-- AUTH_HISTORY --
+------------------
+DROP TABLE IF EXISTS AUTH_HISTORY CASCADE;
+CREATE TABLE AUTH_HISTORY
+(id SERIAL, -- ID посещения
+ user_id INT, -- ID пользователя
+ visit_time TIMESTAMP, -- Дата посещения
+ -----
+ PRIMARY KEY(id),
+ FOREIGN KEY(user_id)
+ 	REFERENCES USERS(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(user_id IS NOT NULL),
+ CHECK(visit_time IS NOT NULL)
+);
+-----------
+-- CARDS --
+-----------
+DROP TABLE IF EXISTS CARDS CASCADE;
+CREATE TABLE CARDS
+(id SERIAL, -- ID карты
+ user_id INT, -- Владелец карты
+ card_name VARCHAR(30), -- Имя карты
+ card_number VARCHAR(16), -- Номер карты
+ card_currency INT, -- Тип валюты
+ card_type INT, -- Тип карты
+ balance FLOAT, -- Баланс карты
+ card_blocked BOOL, -- Заблокирована?
+ card_closed BOOl, -- Закрыта?
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(card_number),
+ FOREIGN KEY(user_id)
+ 	REFERENCES USERS(id),
+ FOREIGN KEY(card_currency)
+ 	REFERENCES CURRENCY_TYPES(id),
+ FOREIGN KEY(card_type)
+ 	REFERENCES CARD_TYPES(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(card_name IS NOT NULL),
+ CHECK(LENGTH(card_number) = 16),
+ CHECK(user_id IS NOT NULL),
+ CHECK(card_currency IS NOT NULL),
+ CHECK(card_type IS NOT NULL),
+ CHECK(balance IS NOT NULL),
+ CHECK(card_blocked IS NOT NULL),
+ CHECK(card_closed IS NOT NULL)
+);
+-----------
+-- BILLS --
+-----------
+DROP TABLE IF EXISTS BILLS CASCADE;
+CREATE TABLE BILLS
+(id SERIAL, -- ID счёта
+ user_id INT, -- Владелец счёта
+ bill_number VARCHAR(20), -- Номер счёта
+ bill_currency INT, -- Тип валюты
+ balance FLOAT, -- Баланс счёта
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(bill_number),
+ FOREIGN KEY(user_id)
+ 	REFERENCES USERS(id),
+ FOREIGN KEY(bill_currency)
+ 	REFERENCES CURRENCY_TYPES(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(LENGTH(bill_number) = 20),
+ CHECK(user_id IS NOT NULL),
+ CHECK(bill_currency IS NOT NULL),
+ CHECK(balance IS NOT NULL)
+);
+-------------
+-- CREDITS --
+-------------
+DROP TABLE IF EXISTS CREDITS CASCADE;
+CREATE TABLE CREDITS
+(id SERIAL, -- ID кредита
+ user_id INT, -- Владелец кредита
+ credit_number VARCHAR(12), -- Номер кредита
+ credit_currency INT, -- Тип валюты
+ balance FLOAT, -- Баланс счёта(долг)
+ pay_time TIMESTAMP, -- Срок оплаты
+ -----
+ PRIMARY KEY(id),
+ UNIQUE(credit_number),
+ FOREIGN KEY(user_id)
+ 	REFERENCES USERS(id),
+ FOREIGN KEY(credit_currency)
+ 	REFERENCES CURRENCY_TYPES(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(LENGTH(credit_number) = 12),
+ CHECK(user_id IS NOT NULL),
+ CHECK(credit_currency IS NOT NULL),
+ CHECK(balance IS NOT NULL)
+);
+-------------
+-- HISTORY --
+-------------
+DROP TABLE IF EXISTS HISTORY CASCADE;
+CREATE TABLE HISTORY
+(id SERIAL, -- ID операции
+ user_id INT, -- Владелец
+ user_number VARCHAR(20), -- Номер пользователя
+ other_number VARCHAR(20), -- Другой номер
+ amount FLOAT, -- Сумма операции
+ operation_currency INT, -- Валюта операции
+ operation_type INT, -- Тип операции
+ operation_time TIMESTAMP, -- Время операции
+ -----
+ PRIMARY KEY(id),
+ FOREIGN KEY(user_id)
+ 	REFERENCES USERS(id),
+ FOREIGN KEY(operation_currency)
+ 	REFERENCES CURRENCY_TYPES(id),
+ FOREIGN KEY(operation_type)
+ 	REFERENCES OPERATION_TYPES(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(user_id IS NOT NULL),
+ CHECK(LENGTH(user_number) = 12 OR LENGTH(user_number) = 16 OR LENGTH(user_number) = 20),
+ CHECK(LENGTH(other_number) = 12 OR LENGTH(other_number) = 16 OR LENGTH(other_number) = 20),
+ CHECK(amount IS NOT NULL),
+ CHECK(operation_currency IS NOT NULL),
+ CHECK(operation_type IS NOT NULL),
+ CHECK(operation_time IS NOT NULL)
+);
+--------------
+-- PATTERNS --
+--------------
+DROP TABLE IF EXISTS PATTERNS CASCADE;
+CREATE TABLE PATTERNS
+(user_id INT, -- ID пользователя
+ pattern_name VARCHAR(20), -- Название шаблона
+ from_ VARCHAR(16), -- Откуда
+ to_ VARCHAR(20), -- Куда
+ amount FLOAT, -- Сколько
+ -----
+ foreign key(user_id)
+ 	references public.USERS(id),
+ unique(user_id, pattern_name),
+ -----
+ CHECK(user_id is not null),
+ CHECK(pattern_name is not null),
+ CHECK(LENGTH(from_) = 16),
+ CHECK(LENGTH(to_) = 12 OR LENGTH(to_) = 16 OR LENGTH(to_) = 20),
+ CHECK(amount is not null)
+);
+
+--
+--
+--
+
+-------------------
+-- REGISTER_USER --
+-------------------
+CREATE OR REPLACE FUNCTION REGISTER_USER(
+	new_firstname VARCHAR(30), -- Имя
+	new_surname VARCHAR(30), -- Фамилия
+	new_dob VARCHAR(10), -- Дата рождения
+	new_phone VARCHAR(10), -- Номер телефона
+	new_pass_series VARCHAR(6), -- Серия паспорта
+	new_pass_number VARCHAR(8), -- Номер паспорта
+	new_user_login VARCHAR(16), -- Логин
+	new_user_password VARCHAR(16), -- Пароль
+	new_patronymic VARCHAR(30) DEFAULT '' -- Отчество
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	INSERT INTO public.USERS(
+	firstname, surname, patronymic, dob, phone, pass_series, pass_number)
+	VALUES (new_firstname, new_surname, new_patronymic, new_dob, new_phone, new_pass_series, new_pass_number);
+	INSERT INTO public.AUTH(
+	user_id, user_login, user_password)
+	SELECT id as new_user_id, new_user_login, new_user_password
+	FROM public.USERS
+	WHERE firstname = new_firstname AND
+		surname = new_surname AND
+		pass_series = new_pass_series AND
+		pass_number = new_pass_number;
+	RETURN 0;
+END;
+$$;
+-----------
+-- LOGIN --
+-----------
+CREATE OR REPLACE FUNCTION LOGIN(
+	input_user_login VARCHAR(16),
+	input_user_password VARCHAR(16)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	IF EXISTS(
+		SELECT * FROM AUTH
+		WHERE AUTH.user_login = input_user_login AND
+		AUTH.user_password = input_user_password
+	)THEN
+		RETURN 1;
+	ELSE
+		RETURN 0;
+	END IF;
+END;
+$$;
+-------------------
+-- GET_USER_DATA --
+-------------------
+CREATE OR REPLACE FUNCTION GET_USER_DATA(
+	input_user_login VARCHAR(16)
+)
+RETURNS TABLE(
+	 id INT,
+	 firstname VARCHAR(30),
+	 surname VARCHAR(30),
+	 patronymic VARCHAR(30),
+	 dob VARCHAR(10),
+	 phone VARCHAR(10),
+	 pass_series VARCHAR(6),
+	 pass_number VARCHAR(8)
+	)
+LANGUAGE plpgsql AS $$
+BEGIN
+	RETURN QUERY(SELECT USERS.id, USERS.firstname, USERS.surname, USERS.patronymic, USERS.dob, USERS.phone, USERS.pass_series, USERS.pass_number FROM USERS
+	JOIN AUTH ON USERS.id = AUTH.user_id
+	WHERE AUTH.user_login = input_user_login);
+END;
+$$;
+-----------------
+-- CREATE_CARD --
+-----------------
+CREATE OR REPLACE FUNCTION CREATE_CARD(
+	input_user_id INT,
+	input_card_name VARCHAR(30),
+	input_card_number VARCHAR(16),
+	input_card_currency VARCHAR(3),
+	input_card_type VARCHAR(10),
+	input_balance FLOAT
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	INSERT INTO CARDS(user_id, card_name, card_number, card_currency, card_type, balance, card_blocked, card_closed)
+	SELECT input_user_id, input_card_name, input_card_number, CURRENCY_TYPES.id, CARD_TYPES.id, input_balance, FALSE, FALSE FROM CURRENCY_TYPES, CARD_TYPES
+	WHERE CURRENCY_TYPES.currency_type = input_card_currency AND
+	CARD_TYPES.card_type = input_card_type;
+	RETURN 1;
+END;
+$$;
+-----------------
+-- CREATE_BILL --
+-----------------
+CREATE OR REPLACE FUNCTION CREATE_BILL(
+	input_user_id INT,
+	input_bill_number VARCHAR(20),
+	input_bill_currency VARCHAR(3),
+	input_balance FLOAT
+	
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	INSERT INTO BILLS(user_id, bill_number, bill_currency, balance)
+	SELECT input_user_id, input_bill_number, CURRENCY_TYPES.id ,input_balance FROM CURRENCY_TYPES
+	WHERE CURRENCY_TYPES.currency_type = input_bill_currency;
+	RETURN 1;
+END;
+$$;
+-------------------
+-- CREATE_CREDIT --
+-------------------
+CREATE OR REPLACE FUNCTION CREATE_CREDIT(
+	input_user_id INT,
+	input_credit_number VARCHAR(12),
+	input_credit_currency VARCHAR(3),
+	input_balance FLOAT,
+	input_pay_time INTERVAL
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	INSERT INTO CREDITS(user_id, credit_number, credit_currency, balance, pay_time)
+	SELECT input_user_id, input_credit_number, CURRENCY_TYPES.id ,input_balance, CURRENT_TIMESTAMP + input_pay_time FROM CURRENCY_TYPES
+	WHERE CURRENCY_TYPES.currency_type = input_credit_currency;
+	RETURN 1;
+END;
+$$;
+---------------
+-- ADD_VISIT --
+---------------
+CREATE OR REPLACE FUNCTION ADD_VISIT(
+	input_user_login VARCHAR(16)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	INSERT INTO AUTH_HISTORY(user_id, visit_time)
+	SELECT USERS.id, CURRENT_TIMESTAMP FROM AUTH JOIN
+	USERS ON AUTH.user_id = USERS.id
+	WHERE AUTH.user_login = input_user_login;
+	RETURN 1;
+END;
+$$;
+---------------
+-- GET_CARDS --
+---------------
+CREATE OR REPLACE FUNCTION GET_CARDS(
+	input_user_login VARCHAR(16)
+)
+RETURNS TABLE(
+	card_name VARCHAR(30), -- Имя карты
+	card_number VARCHAR(16), -- Номер карты
+	card_currency VARCHAR(3), -- Тип валюты
+	card_type VARCHAR(10), -- Тип карты
+	balance FLOAT, -- Баланс карты
+	card_blocked BOOL -- Заблокирована?
+)
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	current_user_id := AUTH.user_id FROM AUTH
+	JOIN USERS ON AUTH.user_id = USERS.id
+	WHERE AUTH.user_login = input_user_login;
+	
+	RETURN QUERY (SELECT CARDS.card_name, CARDS.card_number, CURRENCY_TYPES.currency_type, CARD_TYPES.card_type, CARDS.balance, CARDS.card_blocked
+				  FROM CARDS, CURRENCY_TYPES, CARD_TYPES
+				  WHERE CARDS.user_id = current_user_id AND
+				  CURRENCY_TYPES.id = CARDS.card_currency AND
+				  CARD_TYPES.id = CARDS.card_type AND
+				  CARDS.card_closed = FALSE
+				 );
+END;
+$$;
+---------------
+-- GET_BILLS --
+---------------
+CREATE OR REPLACE FUNCTION GET_BILLS(
+	input_user_login VARCHAR(16)
+)
+RETURNS TABLE(
+	bill_number VARCHAR(20), -- Номер счёта
+	bill_currency VARCHAR(3), -- Тип валюты
+	balance FLOAT -- Баланс карты
+)
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	current_user_id := AUTH.user_id FROM AUTH
+	JOIN USERS ON AUTH.user_id = USERS.id
+	WHERE AUTH.user_login = input_user_login;
+	
+	RETURN QUERY (SELECT BILLS.bill_number, CURRENCY_TYPES.currency_type, BILLS.balance
+				  FROM BILLS, CURRENCY_TYPES
+				  WHERE BILLS.user_id = current_user_id AND
+				  CURRENCY_TYPES.id = BILLS.bill_currency
+				 );
+END;
+$$;
+-----------------
+-- GET_CREDITS --
+-----------------
+CREATE OR REPLACE FUNCTION GET_CREDITS(
+	input_user_login VARCHAR(16)
+)
+RETURNS TABLE(
+	credit_number VARCHAR(12),
+	credit_currency VARCHAR(3),
+	balance FLOAT,
+	pay_time TIMESTAMP
+)
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	current_user_id := AUTH.user_id FROM AUTH
+	JOIN USERS ON AUTH.user_id = USERS.id
+	WHERE AUTH.user_login = input_user_login;
+	
+	RETURN QUERY (SELECT CREDITS.credit_number, CURRENCY_TYPES.currency_type, CREDITS.balance, CREDITS.pay_time
+				  FROM CREDITS, CURRENCY_TYPES
+				  WHERE CREDITS.user_id = current_user_id AND
+				  CURRENCY_TYPES.id = CREDITS.credit_currency
+				 );
+END;
+$$;
+------------------
+-- CHANGE_LOGIN --
+------------------
+CREATE OR REPLACE FUNCTION CHANGE_LOGIN(
+	input_user_login VARCHAR(16),
+	new_user_login VARCHAR(16)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	IF NOT EXISTS(
+		SELECT * FROM AUTH
+		WHERE user_login = input_user_login
+	) OR EXISTS(
+		SELECT * FROM AUTH
+		WHERE user_login = new_user_login
+	) THEN
+		RETURN 0;
+	ELSE
+		current_user_id := AUTH.user_id FROM AUTH
+		JOIN USERS ON AUTH.user_id = USERS.id
+		WHERE AUTH.user_login = input_user_login;
+		
+		INSERT INTO AUTH_CHANGES(user_id, old_value, new_value, change_type)
+		SELECT current_user_id, input_user_login, new_user_login, CHANGE_TYPES.id
+		FROM CHANGE_TYPES
+		WHERE CHANGE_TYPES.change_type = 'login';
+		
+		UPDATE AUTH
+		SET user_login = new_user_login
+		WHERE user_login = input_user_login;
+		
+		RETURN 1;
+	END IF;
+END;
+$$;
+---------------------
+-- CHANGE_PASSWORD --
+---------------------
+CREATE OR REPLACE FUNCTION CHANGE_PASSWORD(
+	input_user_login VARCHAR(16),
+	new_user_password VARCHAR(16)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	IF NOT EXISTS(
+		SELECT * FROM AUTH
+		WHERE user_login = input_user_login
+	) OR EXISTS(
+		SELECT * FROM AUTH
+		WHERE user_password = new_user_password
+	) THEN
+		RETURN 0;
+	ELSE
+		current_user_id := AUTH.user_id FROM AUTH
+		JOIN USERS ON AUTH.user_id = USERS.id
+		WHERE AUTH.user_login = input_user_login;
+		
+		INSERT INTO AUTH_CHANGES(user_id, old_value, new_value, change_type)
+		SELECT current_user_id, AUTH.user_password, new_user_password, CHANGE_TYPES.id
+		FROM CHANGE_TYPES, AUTH
+		WHERE CHANGE_TYPES.change_type = 'pass';
+		
+		UPDATE AUTH
+		SET user_password = new_user_password
+		WHERE user_login = input_user_login;
+		
+		RETURN 1;
+	END IF;
+END;
+$$;
+----------------------
+-- GET_AUTH_HISTORY --
+----------------------
+CREATE OR REPLACE FUNCTION GET_AUTH_HISTORY(
+	input_user_login VARCHAR(16)
+)
+RETURNS TABLE(
+ 	visit_time TIMESTAMP -- Дата посещения
+)
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	current_user_id := AUTH.user_id FROM AUTH
+	JOIN USERS ON AUTH.user_id = USERS.id
+	WHERE AUTH.user_login = input_user_login;
+	
+	RETURN QUERY SELECT public.AUTH_HISTORY.visit_time FROM public.AUTH_HISTORY
+	WHERE public.AUTH_HISTORY.user_id = current_user_id
+	ORDER BY public.AUTH_HISTORY.visit_time DESC
+	LIMIT 30;
+END;
+$$;
+-----------------
+-- DO_TRANSFER --
+-----------------
+CREATE OR REPLACE FUNCTION DO_TRANSFER(
+	input_start_number VARCHAR(20),
+	input_target_number VARCHAR(20),
+	input_amount FLOAT
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+DECLARE currency_id INT;
+BEGIN
+	IF ((LENGTH(input_start_number) != 16 AND
+	LENGTH(input_start_number) != 20) OR
+	(LENGTH(input_target_number) != 16 AND
+	LENGTH(input_target_number) != 20) OR
+	input_start_number = input_target_number)
+	THEN 
+		RETURN 0;
+	END IF;
+	--- from card
+	IF (LENGTH(input_start_number) = 16) AND
+	EXISTS(
+		SELECT * FROM CARDS
+		WHERE card_number = input_start_number AND
+		card_blocked = FALSE AND
+		card_closed = FALSE
+	)
+	THEN
+		currency_id := card_currency FROM CARDS
+		WHERE card_number = input_start_number;
+		--- to card
+		IF (LENGTH(input_target_number) = 16) AND
+		EXISTS(
+			SELECT * FROM CARDS
+			WHERE card_number = input_target_number AND
+			card_blocked = FALSE AND
+			card_closed = FALSE AND
+			card_currency = currency_id
+		)
+		THEN
+			---
+			UPDATE CARDS
+			SET balance = balance - input_amount
+			WHERE card_number = input_start_number;
+			
+			UPDATE CARDS
+			SET balance = balance + input_amount
+			WHERE card_number = input_target_number;
+			
+			INSERT INTO HISTORY(user_id, user_number, other_number, amount, operation_currency, operation_type, operation_time)
+			SELECT CARDS.user_id, input_start_number, input_target_number, input_amount, currency_id, OPERATION_TYPES.id, CURRENT_TIMESTAMP
+			FROM CARDS, OPERATION_TYPES
+			WHERE CARDS.card_number = input_start_number AND
+			OPERATION_TYPES.operation_type = 'give';
+			
+			INSERT INTO HISTORY(user_id, user_number, other_number, amount, operation_currency, operation_type, operation_time)
+			SELECT CARDS.user_id, input_target_number, input_start_number, input_amount, currency_id, OPERATION_TYPES.id, CURRENT_TIMESTAMP
+			FROM CARDS, OPERATION_TYPES
+			WHERE CARDS.card_number = input_target_number AND
+			OPERATION_TYPES.operation_type = 'get';
+			
+			RETURN 1;
+		END IF;
+		--- to bill
+		IF (LENGTH(input_target_number) = 20) AND
+		EXISTS(
+			SELECT * FROM BILLS
+			WHERE bill_number = input_target_number AND
+			bill_currency = currency_id
+		)
+		THEN
+			---
+			UPDATE CARDS
+			SET balance = balance - input_amount
+			WHERE card_number = input_start_number;
+			
+			UPDATE BILLS
+			SET balance = balance + input_amount
+			WHERE bill_number = input_target_number;
+			
+			INSERT INTO HISTORY(user_id, user_number, other_number, amount, operation_currency, operation_type, operation_time)
+			SELECT CARDS.user_id, input_start_number, input_target_number, input_amount, currency_id, OPERATION_TYPES.id, CURRENT_TIMESTAMP
+			FROM CARDS, OPERATION_TYPES
+			WHERE CARDS.card_number = input_start_number AND
+			OPERATION_TYPES.operation_type = 'give';
+			
+			INSERT INTO HISTORY(user_id, user_number, other_number, amount, operation_currency, operation_type, operation_time)
+			SELECT BILLS.user_id, input_target_number, input_start_number, input_amount, currency_id, OPERATION_TYPES.id, CURRENT_TIMESTAMP
+			FROM BILLS, OPERATION_TYPES
+			WHERE BILLS.bill_number = input_target_number AND
+			OPERATION_TYPES.operation_type = 'get';
+			
+			RETURN 2;
+		END IF;
+	END IF;
+	--- from bill
+	IF (LENGTH(input_start_number) = 20) AND
+	EXISTS(
+		SELECT * FROM BILLS
+		WHERE bill_number = input_start_number
+	)
+	THEN
+		currency_id := bill_currency FROM BILLS
+		WHERE bill_number = input_start_number;
+		--- to card
+		IF (LENGTH(input_target_number) = 16) AND
+		EXISTS(
+			SELECT * FROM CARDS
+			WHERE card_number = input_target_number AND
+			card_blocked = FALSE AND
+			card_closed = FALSE AND
+			card_currency = currency_id
+		)
+		THEN
+			---
+			UPDATE BILLS
+			SET balance = balance - input_amount
+			WHERE bill_number = input_start_number;
+			
+			UPDATE CARDS
+			SET balance = balance + input_amount
+			WHERE card_number = input_target_number;
+			
+			INSERT INTO HISTORY(user_id, user_number, other_number, amount, operation_currency, operation_type, operation_time)
+			SELECT BILLS.user_id, input_start_number, input_target_number, input_amount, currency_id, OPERATION_TYPES.id, CURRENT_TIMESTAMP
+			FROM BILLS, OPERATION_TYPES
+			WHERE BILLS.bill_number = input_start_number AND
+			OPERATION_TYPES.operation_type = 'give';
+			
+			INSERT INTO HISTORY(user_id, user_number, other_number, amount, operation_currency, operation_type, operation_time)
+			SELECT CARDS.user_id, input_target_number, input_start_number, input_amount, currency_id, OPERATION_TYPES.id, CURRENT_TIMESTAMP
+			FROM CARDS, OPERATION_TYPES
+			WHERE CARDS.card_number = input_target_number AND
+			OPERATION_TYPES.operation_type = 'get';
+			
+			RETURN 3;
+		END IF;
+		--- to bill
+		IF (LENGTH(input_target_number) = 20) AND
+		EXISTS(
+			SELECT * FROM BILLS
+			WHERE bill_number = input_target_number AND
+			bill_currency = currency_id
+		)
+		THEN
+			---
+			UPDATE BILLS
+			SET balance = balance - input_amount
+			WHERE bill_number = input_start_number;
+			
+			UPDATE BILLS
+			SET balance = balance + input_amount
+			WHERE bill_number = input_target_number;
+			
+			INSERT INTO HISTORY(user_id, user_number, other_number, amount, operation_currency, operation_type, operation_time)
+			SELECT BILLS.user_id, input_start_number, input_target_number, input_amount, currency_id, OPERATION_TYPES.id, CURRENT_TIMESTAMP
+			FROM BILLS, OPERATION_TYPES
+			WHERE BILLS.bill_number = input_start_number AND
+			OPERATION_TYPES.operation_type = 'give';
+			
+			INSERT INTO HISTORY(user_id, user_number, other_number, amount, operation_currency, operation_type, operation_time)
+			SELECT BILLS.user_id, input_target_number, input_start_number, input_amount, currency_id, OPERATION_TYPES.id, CURRENT_TIMESTAMP
+			FROM BILLS, OPERATION_TYPES
+			WHERE BILLS.bill_number = input_target_number AND
+			OPERATION_TYPES.operation_type = 'get';
+			
+			RETURN 4;
+		END IF;
+	END IF;
+	RETURN 0;
+END;
+$$;
+--------------------
+-- CAN_TRANSFER_TO --
+--------------------
+CREATE OR REPLACE FUNCTION CAN_TRANSFER_TO(
+	input_number VARCHAR(20)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	IF LENGTH(input_number) = 16 AND 
+	EXISTS(
+		SELECT * FROM CARDS
+		WHERE card_number = input_number AND
+		card_blocked = FALSE AND
+		card_closed = FALSE
+	)
+	THEN
+		RETURN 1;
+	END IF;
+	IF LENGTH(input_number) = 20 AND 
+	EXISTS(
+		SELECT * FROM BILLS
+		WHERE bill_number = input_number
+	)
+	THEN
+		RETURN 1;
+	END IF;
+	RETURN 0;
+END;
+$$;
+-----------------
+-- GET_HISTORY --
+-----------------
+CREATE OR REPLACE FUNCTION GET_HISTORY(
+	input_user_login VARCHAR(16)
+)
+RETURNS TABLE(
+	user_number VARCHAR(20), -- Номер пользователя
+	other_number VARCHAR(20), -- Другой номер
+	amount FLOAT, -- Сумма операции
+	operation_currency VARCHAR(3), -- Валюта операции
+	operation_type VARCHAR(4), -- Тип операции
+	operation_time TIMESTAMP -- Время операции
+)
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	current_user_id := AUTH.user_id FROM AUTH
+	JOIN USERS ON AUTH.user_id = USERS.id
+	WHERE AUTH.user_login = input_user_login;
+	
+	RETURN QUERY(SELECT HISTORY.user_number, HISTORY.other_number, HISTORY.amount, CURRENCY_TYPES.currency_type, OPERATION_TYPES.operation_type, HISTORY.operation_time
+				 FROM HISTORY, CURRENCY_TYPES, OPERATION_TYPES
+				 WHERE user_id = current_user_id AND
+				 CURRENCY_TYPES.id = HISTORY.operation_currency AND
+				 OPERATION_TYPES.id = HISTORY.operation_type
+				 ORDER BY operation_time DESC
+				);
+END;
+$$;
+----------------------
+-- GET_PART_HISTORY --
+----------------------
+CREATE OR REPLACE FUNCTION GET_PART_HISTORY(
+	input_number VARCHAR(20)
+)
+RETURNS TABLE(
+	user_number VARCHAR(20), -- Номер пользователя
+	other_number VARCHAR(20), -- Другой номер
+	amount FLOAT, -- Сумма операции
+	operation_currency VARCHAR(3), -- Валюта операции
+	operation_type VARCHAR(4), -- Тип операции
+	operation_time TIMESTAMP -- Время операции
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+	RETURN QUERY(SELECT HISTORY.user_number, HISTORY.other_number, HISTORY.amount, CURRENCY_TYPES.currency_type, OPERATION_TYPES.operation_type, HISTORY.operation_time
+				 FROM HISTORY, CURRENCY_TYPES, OPERATION_TYPES
+				 WHERE HISTORY.user_number = input_number AND
+				 CURRENCY_TYPES.id = HISTORY.operation_currency AND
+				 OPERATION_TYPES.id = HISTORY.operation_type
+				 ORDER BY operation_time DESC
+				);
+END;
+$$;
+----------------
+-- BLOCK_CARD --
+----------------
+CREATE OR REPLACE FUNCTION BLOCK_CARD(
+	input_number VARCHAR(16)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	IF EXISTS(
+		SELECT * FROM CARDS
+		WHERE card_number = input_number AND
+		card_blocked = FALSE
+	) THEN
+		UPDATE CARDS
+		SET card_blocked = TRUE
+		WHERE card_number = input_number;
+		RETURN 1;
+	ELSE
+		RETURN 0;
+	END IF;
+END;
+$$;
+--------------------
+-- CREATE_PATTERN --
+--------------------
+CREATE OR REPLACE FUNCTION CREATE_PATTERN(
+	input_user_login VARCHAR(16),
+	input_pattern_name VARCHAR(20),
+	input_number_from VARCHAR(20),
+	input_number_to VARCHAR(20),
+	input_amount FLOAT
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	current_user_id := AUTH.user_id FROM AUTH
+	JOIN USERS ON AUTH.user_id = USERS.id
+	WHERE AUTH.user_login = input_user_login;
+	
+	IF EXISTS(
+		SELECT * FROM PATTERNS
+		WHERE pattern_name = input_pattern_name
+		AND user_id = current_user_id
+	)
+	THEN
+		RETURN 0;
+	END IF;
+	INSERT INTO PATTERNS(user_id, pattern_name, from_, to_, amount)
+	VALUES(current_user_id, input_pattern_name, input_number_from, input_number_to, input_amount);
+	RETURN 1;
+END;
+$$;
+--------------------
+-- REMOVE_PATTERN --
+--------------------
+CREATE OR REPLACE FUNCTION REMOVE_PATTERN(
+	input_user_login VARCHAR(16),
+	input_pattern_name VARCHAR(20)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	current_user_id := AUTH.user_id FROM AUTH
+	JOIN USERS ON AUTH.user_id = USERS.id
+	WHERE AUTH.user_login = input_user_login;
+	
+	IF EXISTS(
+		SELECT * FROM PATTERNS
+		WHERE pattern_name = input_pattern_name
+		AND user_id = current_user_id
+	)
+	THEN
+		DELETE FROM PATTERNS
+		WHERE user_id = current_user_id AND
+		pattern_name = input_pattern_name;
+		RETURN 1;
+	END IF;
+	RETURN 0;
+END;
+$$;
+------------------
+-- GET_PATTERNS --
+------------------
+CREATE OR REPLACE FUNCTION GET_PATTERNS(
+	input_user_login VARCHAR(16)
+)
+RETURNS TABLE(
+ 	pattern_name VARCHAR(20), -- Название шаблона
+ 	from_ VARCHAR(16), -- Откуда
+ 	to_ VARCHAR(20), -- Куда
+ 	amount FLOAT -- Сколько
+)
+LANGUAGE plpgsql AS $$
+DECLARE current_user_id INT;
+BEGIN
+	current_user_id := AUTH.user_id FROM AUTH
+	JOIN USERS ON AUTH.user_id = USERS.id
+	WHERE AUTH.user_login = input_user_login;
+	
+	RETURN QUERY(SELECT PATTERNS.pattern_name, PATTERNS.from_, PATTERNS.to_, PATTERNS.amount FROM PATTERNS
+				 WHERE user_id = current_user_id
+	);
+END;
+$$;
+-----------------
+-- RENAME_CARD --
+-----------------
+CREATE OR REPLACE FUNCTION RENAME_CARD(
+	input_card_number VARCHAR(16),
+	input_card_name VARCHAR(30)
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+BEGIN
+	IF NOT EXISTS(
+		SELECT * FROM CARDS
+		WHERE card_number = input_card_number AND
+		card_name != input_card_name
+	)
+	THEN
+		RETURN 0;
+	END IF;
+	UPDATE CARDS
+	SET card_name = input_card_name
+	WHERE card_number = input_card_number;
+	RETURN 1;
+END;
+$$;
+--------------
+-- MESSAGES --
+--------------
+DROP TABLE IF EXISTS MESSAGES CASCADE;
+CREATE TABLE MESSAGES
+(id SERIAL, -- ID пользователя
+ from_ INT, -- От кого
+ to_ INT, -- Кому
+ msg VARCHAR(128), -- Сообщение
+ msg_time TIMESTAMP, -- Время отправки
+ -----
+ PRIMARY KEY(id),
+ FOREIGN KEY(from_)
+ 	REFERENCES public.USERS(id),
+ FOREIGN KEY(to_)
+ 	REFERENCES public.USERS(id),
+ -----
+ CHECK(id IS NOT NULL),
+ CHECK(from_ IS NOT NULL),
+ CHECK(to_ IS NOT NULL),
+ CHECK(LENGTH(msg) != 0),
+ CHECK(msg_time IS NOT NULL)
+);
+------------------
+-- SEND_MESSAGE --
+------------------
+CREATE OR REPLACE FUNCTION SEND_MESSAGE(
+	input_from_ VARCHAR(16), -- От кого
+	input_to_ VARCHAR(16), -- Кому
+	input_msg VARCHAR(128) -- Сообщение
+)
+RETURNS INT
+LANGUAGE plpgsql AS $$
+DECLARE id_from_ INT;
+DECLARE id_to_ INT;
+BEGIN
+	IF input_from_ = input_to_
+	THEN
+		RETURN 0;
+	END IF;
+	
+	id_from_ := user_id FROM AUTH
+	WHERE user_login = input_from_;
+	id_to_ := user_id FROM AUTH
+	WHERE user_login = input_to_;
+	
+	IF COUNT(*) != 2 FROM USERS
+		WHERE id = id_from_ OR
+		id = id_to_
+	THEN
+		RETURN 0;
+	END IF;
+	
+	INSERT INTO MESSAGES(from_, to_, msg, msg_time)
+	VALUES(id_from_, id_to_, input_msg, CURRENT_TIMESTAMP);
+	
+	RETURN 1;
+END;
+$$;
+------------------
+-- GET_MESSAGES --
+------------------
+CREATE OR REPLACE FUNCTION GET_MESSAGES(
+	input_login VARCHAR(16) -- Логин
+)
+RETURNS TABLE(
+	from_ VARCHAR(16), -- От кого
+	to_ VARCHAR(16), -- Кому
+	msg VARCHAR(128), -- Сообщение
+	msg_time TIMESTAMP -- Время отправки
+)
+LANGUAGE plpgsql AS $$
+DECLARE user_id_ INT;
+BEGIN
+	user_id_ := user_id FROM AUTH
+	WHERE user_login = input_login;
+	
+	RETURN QUERY SELECT * FROM
+	((
+		SELECT input_login, AUTH.user_login, MESSAGES.msg, MESSAGES.msg_time
+		FROM AUTH, MESSAGES
+		WHERE AUTH.user_id = MESSAGES.to_ AND
+		MESSAGES.from_ = user_id_
+	) 
+	UNION 
+	(
+		SELECT AUTH.user_login, input_login, MESSAGES.msg, MESSAGES.msg_time
+		FROM AUTH, MESSAGES
+		WHERE AUTH.user_id = MESSAGES.from_
+		AND MESSAGES.to_ = user_id_
+	)) as RESULT_TABLE ORDER BY msg_time DESC LIMIT 100;
+END;
+$$;

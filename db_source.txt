@@ -276,7 +276,7 @@ DROP TABLE IF EXISTS PATTERNS CASCADE;
 CREATE TABLE PATTERNS
 (user_id INT, -- ID пользователя
  pattern_name VARCHAR(20), -- Название шаблона
- from_ VARCHAR(16), -- Откуда
+ from_ VARCHAR(20), -- Откуда
  to_ VARCHAR(20), -- Куда
  amount FLOAT, -- Сколько
  -----
@@ -286,7 +286,7 @@ CREATE TABLE PATTERNS
  -----
  CHECK(user_id is not null),
  CHECK(pattern_name is not null),
- CHECK(LENGTH(from_) = 16),
+ CHECK(LENGTH(from_) = 16 OR LENGTH(from_) = 20),
  CHECK(LENGTH(to_) = 12 OR LENGTH(to_) = 16 OR LENGTH(to_) = 20),
  CHECK(amount is not null)
 );
@@ -648,7 +648,8 @@ BEGIN
 		SELECT * FROM CARDS
 		WHERE card_number = input_start_number AND
 		card_blocked = FALSE AND
-		card_closed = FALSE
+		card_closed = FALSE AND
+		balance - input_amount >= 0
 	)
 	THEN
 		currency_id := card_currency FROM CARDS
@@ -722,7 +723,8 @@ BEGIN
 	IF (LENGTH(input_start_number) = 20) AND
 	EXISTS(
 		SELECT * FROM BILLS
-		WHERE bill_number = input_start_number
+		WHERE bill_number = input_start_number AND
+		balance - input_amount >= 0
 	)
 	THEN
 		currency_id := bill_currency FROM BILLS
@@ -907,7 +909,7 @@ $$;
 -- CREATE_PATTERN --
 --------------------
 CREATE OR REPLACE FUNCTION CREATE_PATTERN(
-	input_user_login VARCHAR(16),
+	input_user_login VARCHAR(20),
 	input_pattern_name VARCHAR(20),
 	input_number_from VARCHAR(20),
 	input_number_to VARCHAR(20),

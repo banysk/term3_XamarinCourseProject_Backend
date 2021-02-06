@@ -147,7 +147,7 @@ namespace BackEnd
         {
             Console.WriteLine('\t' + DArgs["login"]); // login
             Console.WriteLine('\t' + DArgs["password"]); // password
-            var task = Task.Run(async () => await Program.database.Login(DArgs["login"], DArgs["password"]));
+            var task = Task.Run(async () => await Program.database.Login(DArgs["login"], DArgs["password"])); 
             return task.Result;
         }
 
@@ -246,7 +246,7 @@ namespace BackEnd
         {
             Console.WriteLine('\t' + DArgs["start_number"]); // откуда
             Console.WriteLine('\t' + DArgs["target_number"]); // куда
-            DArgs["amount"] = DArgs["amount"].Replace("%2C", ".");
+            DArgs["amount"] = DArgs["amount"].Replace(",", ".");
             Console.WriteLine('\t' + DArgs["amount"]); // количество
             var task = Task.Run(async () => await Program.database.DoTransfer(DArgs["start_number"], DArgs["target_number"], DArgs["amount"]));
             return task.Result;
@@ -267,7 +267,7 @@ namespace BackEnd
             Console.WriteLine('\t' + DArgs["name"]); // id
             var task = Task.Run(async () => await Program.database.RenameCard(DArgs["number"], DArgs["name"]));
             return task.Result;
-        }
+        } 
 
         // получаем шаблоны
         private List<Pattern> GetPatterns(Dictionary<string, string> DArgs)

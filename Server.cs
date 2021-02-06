@@ -23,7 +23,14 @@ namespace BackEnd
             {
                 // Принимаем новых клиентов и передаем их на обработку новому экземпляру класса Client
                 //ThreadPool.QueueUserWorkItem(new WaitCallback(ClientThread), Listener.AcceptTcpClient());
-                new Client(Listener.AcceptTcpClient());
+                try
+                {
+                    new Client(Listener.AcceptTcpClient());
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message );
+                }
             }
         }
 
